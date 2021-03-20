@@ -1,2 +1,2 @@
-## Refresh Reminder ##
-# Project by the Paradigm Shifters #
+# Refresh Reminder #
+## Project by the Paradigm Shifters ##
