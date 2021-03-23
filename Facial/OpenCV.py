@@ -7,4 +7,6 @@ inp= cv2.VideoCapture(0)
 while True:
     _, frame = inp.read()
     cv2.imshow('Test Screen!', frame)
-    cv2.waitKey(1)
+    key=cv2.waitKey(1)
+    if key!=-1:
+        break
