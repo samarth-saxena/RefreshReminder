@@ -77,4 +77,4 @@ def createWindow():
 	MainWindow.show()
 	sys.exit(app.exec_())
 
-createWindow()
+# createWindow()

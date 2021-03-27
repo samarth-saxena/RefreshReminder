@@ -26,7 +26,7 @@
 # Print idle time ---------------------------------------------------------------
 import time
 from ctypes import Structure, windll, c_uint, sizeof, byref
-# from .firstWin import firstWin
+import firstWin
 
 class LASTINPUTINFO(Structure):
 	_fields_ = [
@@ -45,8 +45,8 @@ try:
 	while True:
 		temp = get_idle_duration()
 		print(temp)
-
+		if(temp>2):
+			firstWin.createWindow()
 		time.sleep(1)
 except KeyboardInterrupt:
-	# firstWin.createWindow()
 	print('\n')
