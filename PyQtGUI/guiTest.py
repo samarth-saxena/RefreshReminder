@@ -15,7 +15,7 @@ class MyWindow(QMainWindow):
 		self.label.move(50,50)
 
 		self.b1 = QtWidgets.QPushButton(self)
-		self.b1.setText("Turn on reminder")
+		self.b1.setText("Turn on")
 		self.b1.clicked.connect(self.clicked)
 
 	def clicked(self):
