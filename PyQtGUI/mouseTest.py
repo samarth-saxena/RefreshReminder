@@ -42,10 +42,13 @@ def get_idle_duration():
 	return millis / 1000.0
 
 try:
+	work = 0
 	while True:
 		temp = get_idle_duration()
+		if (temp<5):
+			work+=1
 		print(temp)
-		if(temp>2):
+		if(work>5):
 			firstWin.createWindow()
 		time.sleep(1)
 except KeyboardInterrupt:

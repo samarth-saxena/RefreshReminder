@@ -9,72 +9,68 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow
 import sys
 
 
 
-class Ui_MainWindow(object):
-	def setupUi(self, MainWindow):
-		MainWindow.setObjectName("MainWindow")
-		MainWindow.setEnabled(True)
-		MainWindow.resize(776, 635)
-		MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-		MainWindow.setWindowOpacity(0.7)
-		self.centralwidget = QtWidgets.QWidget(MainWindow)
+class MyWindow(QMainWindow):
+	def __init__(self):
+		super(MyWindow, self).__init__()
+		self.setGeometry(50,50,1000,500)
+		self.setupUi()
+
+	def setupUi(self):
+		self.setStyleSheet("background-color: #ffbf00;")
+		self.setObjectName("MainWindow")
+		self.setEnabled(True)
+		self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+		self.setWindowOpacity(0.75)
+		self.centralwidget = QtWidgets.QWidget(self)
 		self.centralwidget.setObjectName("centralwidget")
-		self.onButton = QtWidgets.QPushButton(self.centralwidget)
-		self.onButton.setGeometry(QtCore.QRect(240, 330, 231, 111))
-		self.onButton.setCursor(QtGui.QCursor(QtCore.Qt.SizeAllCursor))
-		self.onButton.setFlat(False)
-		self.onButton.setObjectName("onButton")
+		self.okButton = QtWidgets.QPushButton(self.centralwidget)
+		self.okButton.setGeometry(QtCore.QRect(240, 330, 231, 111))
+		self.okButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+		self.okButton.setFlat(False)
+		self.okButton.setObjectName("okButton")
+		self.okButton.setStyleSheet("border: 5px solid black")
 		self.titleLabel = QtWidgets.QLabel(self.centralwidget)
 		self.titleLabel.setGeometry(QtCore.QRect(200, 120, 371, 141))
 		font = QtGui.QFont()
 		font.setFamily("Quicksand")
+		font.setBold(True)
+		font.setWeight(80)
 		font.setPointSize(48)
 		self.titleLabel.setFont(font)
+		font.setPointSize(20)
+		self.okButton.setFont(font)
 		self.titleLabel.setObjectName("titleLabel")
-		MainWindow.setCentralWidget(self.centralwidget)
-		self.menubar = QtWidgets.QMenuBar(MainWindow)
-		self.menubar.setGeometry(QtCore.QRect(0, 0, 776, 22))
-		self.menubar.setObjectName("menubar")
-		self.menufile = QtWidgets.QMenu(self.menubar)
-		self.menufile.setObjectName("menufile")
-		self.menutest = QtWidgets.QMenu(self.menubar)
-		self.menutest.setObjectName("menutest")
-		MainWindow.setMenuBar(self.menubar)
-		self.statusbar = QtWidgets.QStatusBar(MainWindow)
-		self.statusbar.setCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
-		self.statusbar.setAcceptDrops(False)
-		self.statusbar.setLayoutDirection(QtCore.Qt.LeftToRight)
-		self.statusbar.setObjectName("statusbar")
-		MainWindow.setStatusBar(self.statusbar)
-		self.menutest.addSeparator()
-		self.menubar.addAction(self.menufile.menuAction())
-		self.menubar.addAction(self.menutest.menuAction())
-
-		self.retranslateUi(MainWindow)
-		QtCore.QMetaObject.connectSlotsByName(MainWindow)
+		self.setCentralWidget(self.centralwidget)
+		self.retranslateUi(self)
+		QtCore.QMetaObject.connectSlotsByName(self)
 
 	def retranslateUi(self, MainWindow):
 		_translate = QtCore.QCoreApplication.translate
-		MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-		self.onButton.setText(_translate("MainWindow", "PushButton"))
-		self.titleLabel.setText(_translate("MainWindow", "Test label"))
-		self.menufile.setTitle(_translate("MainWindow", "file"))
-		self.menutest.setTitle(_translate("MainWindow", "test"))
+		MainWindow.setWindowTitle("MainWindow")
+		self.okButton.setText("Okay")
+		self.titleLabel.setText("Refresh time!!!")
 		self.update()
+		self.okButton.clicked.connect(self.closeWin)
 	
 	def update(self):
 		self.titleLabel.adjustSize()
+
+	def closeWin(self):
+		self.close()
 
 
 def createWindow():
 	app = QtWidgets.QApplication(sys.argv)
 	MainWindow = QtWidgets.QMainWindow()
-	ui = Ui_MainWindow()
-	ui.setupUi(MainWindow)
-	MainWindow.show()
+	ui = MyWindow()
+	ui.setWindowFlag(Qt.FramelessWindowHint)
+	ui.show()
 	sys.exit(app.exec_())
 
 # createWindow()
