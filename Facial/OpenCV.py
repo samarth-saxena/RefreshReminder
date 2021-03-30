@@ -3,7 +3,7 @@ import cv2
 getFace = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
 
 inp = cv2.VideoCapture(0)
-storeData = 0;
+storeData = 0
 
 font = cv2.FONT_HERSHEY_SCRIPT_COMPLEX
 
