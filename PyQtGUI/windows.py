@@ -247,7 +247,7 @@ class postureWindow(QMainWindow):
 		self.setWindowTitle("postureWindow")
 		self.okButton.setText("Okay")
 		self.exitButton.setText("  X  ")
-		self.titleLabel.setText("Refresh time!!")
+		self.titleLabel.setText("Sitting too close!!")
 		self.update()
 		self.okButton.clicked.connect(self.closeWin)
 		self.exitButton.clicked.connect(self.exitWin)
@@ -276,38 +276,38 @@ def createPostureWin():
 #____________________________________________________________________________________
 
 
-class LASTINPUTINFO(Structure):
-	_fields_ = [
-		('cbSize', c_uint),
-		('dwTime', c_uint),
-	]
+# class LASTINPUTINFO(Structure):
+# 	_fields_ = [
+# 		('cbSize', c_uint),
+# 		('dwTime', c_uint),
+# 	]
 
-def get_idle_duration():
-	lastInputInfo = LASTINPUTINFO()
-	lastInputInfo.cbSize = sizeof(lastInputInfo)
-	windll.user32.GetLastInputInfo(byref(lastInputInfo))
-	millis = windll.kernel32.GetTickCount() - lastInputInfo.dwTime
-	return millis / 1000.0
+# def get_idle_duration():
+# 	lastInputInfo = LASTINPUTINFO()
+# 	lastInputInfo.cbSize = sizeof(lastInputInfo)
+# 	windll.user32.GetLastInputInfo(byref(lastInputInfo))
+# 	millis = windll.kernel32.GetTickCount() - lastInputInfo.dwTime
+# 	return millis / 1000.0
 
-def main():
-	createMainWindow()
-	try:
-		work = 0
-		while True:
-			temp = get_idle_duration()
-			if (temp<5):
-				work+=1
-			else:
-				work=0
-			print(temp)
-			print(work)
-			print()
-			if(work>10):
-				createRefreshWin()
-				work=0
-			time.sleep(1)
-	except KeyboardInterrupt:
-		print('\n')
+# def main():
+# 	createMainWindow()
+# 	try:
+# 		work = 0
+# 		while True:
+# 			temp = get_idle_duration()
+# 			if (temp<5):
+# 				work+=1
+# 			else:
+# 				work=0
+# 			print(temp)
+# 			print(work)
+# 			print()
+# 			if(work>10):
+# 				createRefreshWin()
+# 				work=0
+# 			time.sleep(1)
+# 	except KeyboardInterrupt:
+# 		print('\n')
 
-if __name__=="__main__":
-	main()
+# if __name__=="__main__":
+# 	main()
