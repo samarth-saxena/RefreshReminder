@@ -14,7 +14,7 @@ class mainWindow(QMainWindow):
 		self.setupUi()
 
 	def setupUi(self):
-		self.setStyleSheet("background-color: #ffbf00;")
+		self.setStyleSheet("background-color: #00bfff;")
 		self.setObjectName("mainWindow")
 		self.setEnabled(True)
 		self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
@@ -112,16 +112,17 @@ def createMainWindow():
 	ui.show()
 	app.exec_()
 
+#____________________________________________________________________________________
 
-class popupWindow(QMainWindow):
+class refreshWindow(QMainWindow):
 	def __init__(self):
-		super(popupWindow, self).__init__()
+		super(refreshWindow, self).__init__()
 		self.setGeometry(250,250,1000,500)
 		self.setupUi()
 
 	def setupUi(self):
 		self.setStyleSheet("background-color: #ffbf00;")
-		self.setObjectName("popupWindow")
+		self.setObjectName("refreshWindow")
 		self.setEnabled(True)
 		self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
 		self.setWindowOpacity(0.75)
@@ -163,7 +164,7 @@ class popupWindow(QMainWindow):
 
 	def retranslateUi(self):
 		_translate = QtCore.QCoreApplication.translate
-		self.setWindowTitle("popupWindow")
+		self.setWindowTitle("refreshWindow")
 		self.okButton.setText("Okay")
 		self.exitButton.setText("  X  ")
 		self.titleLabel.setText("Refresh time!!")
@@ -183,14 +184,97 @@ class popupWindow(QMainWindow):
 	def showWin(self):
 		self.setWindowOpacity(100)
 
-def createPopup():
+def createRefreshWin():
 	app = QtWidgets.QApplication(sys.argv)
-	ui = popupWindow()
+	ui = refreshWindow()
 	ui.setWindowFlag(Qt.FramelessWindowHint)
 	ui.show()
 	app.exec_()
 
-# createPopup()
+
+#____________________________________________________________________________________
+
+class postureWindow(QMainWindow):
+	def __init__(self):
+		super(postureWindow, self).__init__()
+		self.setGeometry(250,250,1000,500)
+		self.setupUi()
+
+	def setupUi(self):
+		self.setStyleSheet("background-color: #ffbf00;")
+		self.setObjectName("postureWindow")
+		self.setEnabled(True)
+		self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+		self.setWindowOpacity(0.75)
+		self.centralwidget = QtWidgets.QWidget(self)
+		self.centralwidget.setObjectName("centralwidget")
+
+		self.okButton = QtWidgets.QPushButton(self.centralwidget)
+		self.okButton.setGeometry(QtCore.QRect(380, 330, 231, 111))
+		self.okButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+		self.okButton.setFlat(False)
+		self.okButton.setObjectName("okButton")
+		self.okButton.setStyleSheet("border: 5px solid black")
+		
+		self.exitButton = QtWidgets.QPushButton(self.centralwidget)
+		self.exitButton.setObjectName("exitButton")
+		self.exitButton.setStyleSheet("border: 5px solid black")
+		self.exitButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+
+		self.titleLabel = QtWidgets.QLabel(self.centralwidget)
+		self.titleLabel.setGeometry(QtCore.QRect(170, 120, 371, 141))
+		self.titleLabel.setObjectName("titleLabel")
+
+		font = QtGui.QFont()
+		font.setFamily("Quicksand")
+		font.setBold(True)
+		font.setWeight(80)
+		font.setPointSize(48)
+		self.titleLabel.setFont(font)
+
+		font.setPointSize(20)
+		self.okButton.setFont(font)
+
+		font.setPointSize(14)
+		self.exitButton.setFont(font)
+
+		self.setCentralWidget(self.centralwidget)
+		self.retranslateUi()
+		QtCore.QMetaObject.connectSlotsByName(self)
+
+	def retranslateUi(self):
+		_translate = QtCore.QCoreApplication.translate
+		self.setWindowTitle("postureWindow")
+		self.okButton.setText("Okay")
+		self.exitButton.setText("  X  ")
+		self.titleLabel.setText("Refresh time!!")
+		self.update()
+		self.okButton.clicked.connect(self.closeWin)
+		self.exitButton.clicked.connect(self.exitWin)
+	
+	def update(self):
+		self.titleLabel.adjustSize()
+
+	def closeWin(self):
+		self.close()
+	
+	def exitWin(self):
+		sys.exit()
+
+	def showWin(self):
+		self.setWindowOpacity(100)
+
+def createPostureWin():
+	app = QtWidgets.QApplication(sys.argv)
+	ui = postureWindow()
+	ui.setWindowFlag(Qt.FramelessWindowHint)
+	ui.show()
+	app.exec_()
+
+# createRefreshWin()
+
+#____________________________________________________________________________________
+
 
 class LASTINPUTINFO(Structure):
 	_fields_ = [
@@ -219,7 +303,7 @@ def main():
 			print(work)
 			print()
 			if(work>10):
-				createPopup()
+				createRefreshWin()
 				work=0
 			time.sleep(1)
 	except KeyboardInterrupt:
