@@ -28,6 +28,7 @@ import time
 from ctypes import Structure, windll, c_uint, sizeof, byref
 import windows
 
+
 class LASTINPUTINFO(Structure):
 	_fields_ = [
 		('cbSize', c_uint),
@@ -42,6 +43,7 @@ def get_idle_duration():
 	return millis / 1000.0
 
 def main():
+	windows.createMainWindow()
 	try:
 		work = 0
 		while True:
@@ -52,10 +54,10 @@ def main():
 				work=0
 			print(temp)
 			if(work>5):
-				windows.createWindow()
+				windows.createPopup()
 			time.sleep(1)
 	except KeyboardInterrupt:
 		print('\n')
 
 if __name__=="__main__":
-    main()
+	main()
