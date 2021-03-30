@@ -41,15 +41,21 @@ def get_idle_duration():
 	millis = windll.kernel32.GetTickCount() - lastInputInfo.dwTime
 	return millis / 1000.0
 
-try:
-	work = 0
-	while True:
-		temp = get_idle_duration()
-		if (temp<5):
-			work+=1
-		print(temp)
-		if(work>5):
-			firstWin.createWindow()
-		time.sleep(1)
-except KeyboardInterrupt:
-	print('\n')
+def main():
+	try:
+		work = 0
+		while True:
+			temp = get_idle_duration()
+			if (temp<5):
+				work+=1
+			else:
+				work=0
+			print(temp)
+			if(work>5):
+				firstWin.createWindow()
+			time.sleep(1)
+	except KeyboardInterrupt:
+		print('\n')
+
+if __name__=="__main__":
+    main()
