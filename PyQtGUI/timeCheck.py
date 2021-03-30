@@ -26,7 +26,8 @@
 # Print idle time ---------------------------------------------------------------
 import time
 from ctypes import Structure, windll, c_uint, sizeof, byref
-import firstWin
+import windows
+
 
 class LASTINPUTINFO(Structure):
 	_fields_ = [
@@ -41,15 +42,22 @@ def get_idle_duration():
 	millis = windll.kernel32.GetTickCount() - lastInputInfo.dwTime
 	return millis / 1000.0
 
-try:
-	work = 0
-	while True:
-		temp = get_idle_duration()
-		if (temp<5):
-			work+=1
-		print(temp)
-		if(work>5):
-			firstWin.createWindow()
-		time.sleep(1)
-except KeyboardInterrupt:
-	print('\n')
+def main():
+	windows.createMainWindow()
+	try:
+		work = 0
+		while True:
+			temp = get_idle_duration()
+			if (temp<5):
+				work+=1
+			else:
+				work=0
+			print(temp)
+			if(work>5):
+				windows.createPopup()
+			time.sleep(1)
+	except KeyboardInterrupt:
+		print('\n')
+
+if __name__=="__main__":
+	main()
