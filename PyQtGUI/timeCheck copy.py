@@ -25,6 +25,7 @@
 
 # Print idle time ---------------------------------------------------------------
 import time
+import threading
 from ctypes import Structure, windll, c_uint, sizeof, byref
 import windows
 import cv2
@@ -43,37 +44,65 @@ def get_idle_duration():
 	millis = windll.kernel32.GetTickCount() - lastInputInfo.dwTime
 	return millis / 1000.0
 
+class faceDistance (threading.Thread):
+
+	def __init__(self, threadID, name, counter):
+		threading.Thread.__init__(self)
+		self.threadID = threadID
+		self.name = name
+		self.counter = counter
+
+	def run(self):
+		getFace = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
+
+		inp = cv2.VideoCapture(0)
+		storeData = 0
+
+		font = cv2.FONT_HERSHEY_SCRIPT_COMPLEX
+
+		while True:
+			_, frame = inp.read()
+
+			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+			facialScan = getFace.detectMultiScale(gray, 1.1, 4)
+
+			for (x, y, w, h) in facialScan:
+				if (w*h > 3000):
+					if storeData == 0:
+						storeData = w * h
+
+					# print(w*h)
+
+					if w * h > 2 * storeData:
+						cv2.putText(frame, 'Too Close!', (x - 3, y - 3), font, 1, (255, 255, 255), 2)
+						cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+					# else:
+					# 	cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+			cv2.imshow('ComputerVision', frame)
+			key = cv2.waitKey(1)
+			if (key != -1):
+				break
+
+		inp.release()
+
+
+
+
+
 def main():
 	windows.createMainWindow()
 	
-	# getFace = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
-	# inp = cv2.VideoCapture(0)
-	# storeData = 0
-	# font = cv2.FONT_HERSHEY_SCRIPT_COMPLEX
-	
+	thread1 = faceDistance(1, "Thread-1", 1)
+	# thread2 = myThread(2, "Thread-2", 2)
+
+	# Start new Threads
+	thread1.start()
+	# thread2.start()
+
 	try:
 		work = 0
 		while True:
-			# _, frame = inp.read()
-			# gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-			# facialScan = getFace.detectMultiScale(gray, 1.1, 4)
-
-			# for (x, y, w, h) in facialScan:
-			# 	if (w*h > 3000):
-			# 		if storeData == 0:
-			# 			storeData = w * h
-			# 		# print(w*h)
-			# 		if w * h > 6/5 * storeData:
-			# 			cv2.putText(frame, 'Too Close!', (x - 3, y - 3), font, 1, (255, 255, 255), 2)
-			# 			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-			# 			windows.createPostureWin()
-			# 		# else:
-			# 		# 	cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-			# cv2.imshow('ComputerVision', frame)
-			# key = cv2.waitKey(1)
-
-
 			temp = get_idle_duration()
 			if (temp<5):
 				work+=1
@@ -86,7 +115,6 @@ def main():
 				windows.createRefreshWin()
 				work=0
 			time.sleep(1)
-		# inp.release()
 
 	except KeyboardInterrupt:
 		print('\n')
