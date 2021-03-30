@@ -82,4 +82,4 @@ def createWindow():
 	ui.show()
 	sys.exit(app.exec_())
 
-createWindow()
+# createWindow()
