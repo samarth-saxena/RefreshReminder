@@ -270,7 +270,8 @@ def createPostureWin():
 	ui.setWindowFlag(Qt.FramelessWindowHint)
 	ui.show()
 	app.exec_()
-
+	time.sleep(1)
+	ui.close()
 # createRefreshWin()
 
 #____________________________________________________________________________________
