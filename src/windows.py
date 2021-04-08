@@ -195,45 +195,50 @@ def createRefreshWin():
 #____________________________________________________________________________________
 
 class postureWindow(QMainWindow):
-	def __init__(self):
+	def __init__(self, height, width):
 		super(postureWindow, self).__init__()
-		self.setGeometry(250,250,1000,500)
+		self.setWindowFlag(Qt.FramelessWindowHint)
+		self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
+		# ui.setWindowOpacity(0)
+		# ui.setAttribute(Qt.WA_NoSystemBackground, True)
+		self.setAttribute(Qt.WA_TranslucentBackground, True)
+		self.setGeometry(0,0,width,height)
 		self.setupUi()
 
 	def setupUi(self):
-		self.setStyleSheet("background-color: #ffbf00;")
+		self.setStyleSheet("border: 10px solid red;")
 		self.setObjectName("postureWindow")
 		self.setEnabled(True)
 		self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-		self.setWindowOpacity(0.75)
+		
 		self.centralwidget = QtWidgets.QWidget(self)
 		self.centralwidget.setObjectName("centralwidget")
 
-		self.okButton = QtWidgets.QPushButton(self.centralwidget)
-		self.okButton.setGeometry(QtCore.QRect(380, 330, 231, 111))
-		self.okButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-		self.okButton.setFlat(False)
-		self.okButton.setObjectName("okButton")
-		self.okButton.setStyleSheet("border: 5px solid black")
+		# self.okButton = QtWidgets.QPushButton(self.centralwidget)
+		# self.okButton.setGeometry(QtCore.QRect(380, 330, 231, 111))
+		# self.okButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+		# self.okButton.setFlat(False)
+		# self.okButton.setObjectName("okButton")
+		# self.okButton.setStyleSheet("border: 5px solid black")
 		
 		self.exitButton = QtWidgets.QPushButton(self.centralwidget)
 		self.exitButton.setObjectName("exitButton")
-		self.exitButton.setStyleSheet("border: 5px solid black")
+		self.exitButton.setStyleSheet("border: 5px solid red; background-color: red;")
 		self.exitButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
-		self.titleLabel = QtWidgets.QLabel(self.centralwidget)
-		self.titleLabel.setGeometry(QtCore.QRect(170, 120, 371, 141))
-		self.titleLabel.setObjectName("titleLabel")
+		# self.titleLabel = QtWidgets.QLabel(self.centralwidget)
+		# self.titleLabel.setGeometry(QtCore.QRect(170, 120, 371, 141))
+		# self.titleLabel.setObjectName("titleLabel")
 
 		font = QtGui.QFont()
 		font.setFamily("Quicksand")
 		font.setBold(True)
 		font.setWeight(80)
 		font.setPointSize(48)
-		self.titleLabel.setFont(font)
+		# self.titleLabel.setFont(font)
 
-		font.setPointSize(20)
-		self.okButton.setFont(font)
+		# font.setPointSize(20)
+		# self.okButton.setFont(font)
 
 		font.setPointSize(14)
 		self.exitButton.setFont(font)
@@ -245,15 +250,15 @@ class postureWindow(QMainWindow):
 	def retranslateUi(self):
 		_translate = QtCore.QCoreApplication.translate
 		self.setWindowTitle("postureWindow")
-		self.okButton.setText("Okay")
+		# self.okButton.setText("Okay")
 		self.exitButton.setText("  X  ")
-		self.titleLabel.setText("Sitting too close!!")
+		# self.titleLabel.setText("Sitting too close!!")
 		self.update()
-		self.okButton.clicked.connect(self.closeWin)
-		self.exitButton.clicked.connect(self.exitWin)
+		# self.okButton.clicked.connect(self.closeWin)
+		self.exitButton.clicked.connect(self.closeWin)
 	
-	def update(self):
-		self.titleLabel.adjustSize()
+	# def update(self):
+	# 	self.titleLabel.adjustSize()
 
 	def closeWin(self):
 		self.close()
@@ -266,13 +271,19 @@ class postureWindow(QMainWindow):
 
 def createPostureWin():
 	app = QtWidgets.QApplication(sys.argv)
-	ui = postureWindow()
-	ui.setWindowFlag(Qt.FramelessWindowHint)
+	screen = app.primaryScreen()
+	print('Screen: %s' % screen.name())
+	size = screen.size()
+	print('Size: %d x %d' % (size.width(), size.height()))
+	rect = screen.availableGeometry()
+	print('Available: %d x %d' % (rect.width(), rect.height()))
+
+	ui = postureWindow(rect.height(), rect.width())
+
 	ui.show()
 	app.exec_()
-	time.sleep(1)
-	ui.close()
-# createRefreshWin()
+
+# createPostureWin()
 
 #____________________________________________________________________________________
 
