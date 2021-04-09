@@ -30,6 +30,8 @@ from ctypes import Structure, windll, c_uint, sizeof, byref
 import windows
 import cv2
 
+from win10toast import ToastNotifier
+
 import numpy as np
 import dlib
 from math import hypot
@@ -59,7 +61,7 @@ class faceDistance (threading.Thread):
 	def run(self):
 		getFace = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
 
-		inp = cv2.VideoCapture(0)
+		inp = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 		storeData = 0
 
 		detector = dlib.get_frontal_face_detector()
@@ -97,12 +99,14 @@ class faceDistance (threading.Thread):
 						storeData = w * h
 
 					# print(w*h)
+						# win = windows.createPostureWin()
 
 					if w * h > 6/5 * storeData:
-						# windows.createPostureWin()
+						# win.showWin()
 						cv2.putText(frame, 'Too Close!', (x - 3, y - 3), font, 1, (255, 255, 255), 2)
 						cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 					# else:
+					# 	win.closeWin()
 					# 	cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
 			for face in faces:
@@ -125,6 +129,7 @@ class faceDistance (threading.Thread):
 				break
 
 		inp.release()
+		cv2.destroyAllWindows()
 
 # class eyeBlink (threading.Thread):
 
@@ -193,31 +198,33 @@ class faceDistance (threading.Thread):
 def main():
 	windows.createMainWindow()
 	
-	thread1 = faceDistance(1, "Thread-1", 1)
-	# thread2 = eyeBlink(2, "Thread-2", 2)
+	toaster = ToastNotifier()
+	toaster.show_toast(title="Sample Notification",message="Python is awesome!!!",duration=10, threaded=True)
+	# thread1 = faceDistance(1, "Thread-1", 1)
+	# # thread2 = eyeBlink(2, "Thread-2", 2)
 
-	# Start new Threads
-	thread1.start()
-	# thread2.start()
+	# # Start new Threads
+	# thread1.start()
+	# # thread2.start()
 
-	try:
-		work = 0
-		while True:
-			temp = get_idle_duration()
-			if (temp<5):
-				work+=1
-			else:
-				work=0
-			print(temp)
-			print(work)
-			print()
-			if(work>10):
-				windows.createRefreshWin()
-				work=0
-			time.sleep(1)
+	# try:
+	# 	work = 0
+	# 	while True:
+	# 		temp = get_idle_duration()
+	# 		if (temp<5):
+	# 			work+=1
+	# 		else:
+	# 			work=0
+	# 		print(temp)
+	# 		print(work)
+	# 		print()
+	# 		if(work>10):
+	# 			windows.createRefreshWin()
+	# 			work=0
+	# 		time.sleep(1)
 
-	except KeyboardInterrupt:
-		print('\n')
+	# except KeyboardInterrupt:
+	# 	print('\n')
 
 if __name__=="__main__":
 	main()
