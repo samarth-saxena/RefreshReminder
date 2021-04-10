@@ -55,6 +55,20 @@ class mainWindow(QMainWindow):
 		self.onSlider2.setOrientation(Qt.Horizontal)
 		self.onSlider2.setTickPosition(QtWidgets.QSlider.NoTicks)
 
+		self.aboutButton = QtWidgets.QPushButton(self.centralwidget)
+		self.aboutButton.setGeometry(QtCore.QRect(10, 100, 100, 80))
+		self.aboutButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+		self.aboutButton.setFlat(False)
+		self.aboutButton.setObjectName("aboutButton")
+		self.aboutButton.setStyleSheet("border: 5px solid black")
+
+		self.helpButton = QtWidgets.QPushButton(self.centralwidget)
+		self.helpButton.setGeometry(QtCore.QRect(10, 200, 100, 80))
+		self.helpButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+		self.helpButton.setFlat(False)
+		self.helpButton.setObjectName("helpButton")
+		self.helpButton.setStyleSheet("border: 5px solid black")
+
 		self.goButton = QtWidgets.QPushButton(self.centralwidget)
 		self.goButton.setGeometry(QtCore.QRect(250, 550, 231, 111))
 		self.goButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -86,12 +100,20 @@ class mainWindow(QMainWindow):
 	def retranslateUi(self):
 		_translate = QtCore.QCoreApplication.translate
 		self.setWindowTitle("mainWindow")
+
 		self.titleLabel.setText("Refresh Reminder")
+
 		self.exitButton.setText("  X  ")
+
 		self.option1.setText("Turn on reminder")
 		self.option2.setText("Turn on posture track")
+
+		self.aboutButton.setText("About")
+		self.helpButton.setText("Help")
 		self.goButton.setText("Lets go!")
+
 		self.update()
+
 		self.goButton.clicked.connect(self.closeWin)
 		self.exitButton.clicked.connect(self.exitWin)
 	
@@ -108,9 +130,11 @@ class mainWindow(QMainWindow):
 def createMainWindow():
 	app = QtWidgets.QApplication(sys.argv)
 	ui = mainWindow()
-	ui.setWindowFlag(Qt.FramelessWindowHint)
+	# ui.setWindowFlag(Qt.FramelessWindowHint)
 	ui.show()
 	app.exec_()
+
+# createMainWindow()
 
 #____________________________________________________________________________________
 
@@ -278,7 +302,7 @@ def createPostureWin():
 	rect = screen.availableGeometry()
 	print('Available: %d x %d' % (rect.width(), rect.height()))
 
-	ui = postureWindow(rect.height(), rect.width())
+	ui = postureWindow(size.height(), size.width())
 
 	ui.show()
 	app.exec_()
