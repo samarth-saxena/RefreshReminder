@@ -1,3 +1,5 @@
+import threading
+import main
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QPixmap
@@ -131,7 +133,7 @@ class Window(QWidget):
 		self.homeButton = QPushButton("Home", self)
 		self.homeButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.homeButton.setObjectName("homeButton")
-		# self.homeButton.setIcon(QIcon('./home.png'))
+		# self.homeButton.setIcon(QIcon('home.png'))
 		# self.homeButton.setIconSize(QtCore.QSize(130,130))
 		self.homeButton.clicked.connect(lambda: self.switchPage(0))
 		
@@ -267,16 +269,18 @@ class Window(QWidget):
 		self.page2 = QWidget()
 		self.page2Layout = QVBoxLayout()
 
-		title1 = QLabel("<h1>Face-to-screen distance</h1>", self)
-		title1.setObjectName('title1')
+		# option1 = QLabel("Notification mode:", self.page1)
+		# option1.setObjectName('option1')
 
-		text1 = QLabel("<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", self)
-		text1.setObjectName('text1')
-		text1.setWordWrap(True)
+		# switch1 = QPushButton("On", self.page1)
+		# switch1.setCheckable(True)
+		# switch1.clicked.connect(lambda: self.changeColor(switch1))
+		# switch1.setObjectName('switch1')
+		# switch1.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
-		self.page2Layout.addWidget(title1)
-		self.page2Layout.addWidget(text1)
-		self.page2Layout.setAlignment(Qt.AlignTop)
+		# self.page2Layout.addWidget(title1)
+		# self.page2Layout.addWidget(text1)
+		# self.page2Layout.setAlignment(Qt.AlignTop)
 
 		self.page2.setLayout(self.page2Layout)
 		self.stackedLayout.addWidget(self.page2)
@@ -315,22 +319,37 @@ class Window(QWidget):
 			button.setStyleSheet("background-color : green")
 			button.setText("On")
 
-def exitApp(self):
+def exitApp():
 	sys.exit(0)
 
-def hideApp(self):
-	window.hide()
+def hideApp():
+	window.close()
+
+def showApp():
+	window.show()
 
 
 # def hideWindow():
 # 	window.hide()
 
 
+# app = QApplication(sys.argv)
+# window = Window()
+# showApp()
+# app.exec_()
+
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
 	window = Window()
-	
 	window.show()
+
+	# thread1 = main.faceDistance(1, "Thread-1", 1)
+	# thread2 = main.screenUsage(2, "Thread-2", 2)
+
+	# # Start new Threads
+	# thread1.start()
+	# thread2.start()
+
 	sys.exit(app.exec_())
 
 # class mainWindow(QMainWindow):
