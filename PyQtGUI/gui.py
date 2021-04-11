@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (
 	QApplication,
 	QMainWindow, QWidget,
@@ -12,42 +13,93 @@ import sys
 class Window(QWidget):
 	def __init__(self):
 		super().__init__()
-		self.setWindowTitle("QGridLayout Example")
+		self.mainWidget = self
+		self.mainWidget.setObjectName("mainWidget")
+		print (self.mainWidget.objectName())
+		self.setWindowTitle("Refresh Reminder - Main Window")
+		self.setMinimumSize(800, 400)
 		# Create a QGridLayout instance
 		self.mainLayout = QGridLayout()
 		self.sidePane = QVBoxLayout()
+		# self.sidePaneWidget = QWidget(self.sidePane)
+		self.sidePane.setObjectName("sidePaneWidget")
 		self.stackedLayout = QStackedLayout()
 
-		self.titleLabel = QLabel(self)
-		self.titleLabel.setGeometry(QtCore.QRect(100, 100, 371, 141))
+		themeStylesheet = ("""
+			QWidget#mainWidget {
+				margin: 0px;
+				padding: 0px;
+				text-align: center;
+				background-color: #6fb98f;
+
+			}
+
+			QLabel#titleLabel {
+				padding: 30px;
+				font-family: Quicksand;
+				font-size: 60px;
+				font-weight: bold;
+			}
+
+			QPushButton {
+				padding: 30px 50px;
+				background-color: #2c7873;
+				color: white;
+				border: none;
+				font-family: "Open Sans";
+				font-weight: bold;
+			}
+
+			QPushButton#switch1, #switch2, #switch3, #switch4 {
+				padding: 10px 20px;
+				background-color:green;
+				max-width: 50px;
+				max-height: 50px;
+
+			}
+
+			QLabel#option1, #option2, #option3, #option4 {
+				padding-left: 100px;
+				font-size:20px;
+			}
+
+			QPushButton::hover {
+				background-color: #004445;
+			}
+
+		""")
+		self.titleLabel = QLabel("Refresh Reminder", self)
+		# self.titleLabel.setGeometry(QtCore.QRect(100, 100, 371, 141))
 		self.titleLabel.setObjectName("titleLabel")
-		self.titleLabel.setText("Refresh Reminder")
 
 		self.homePage()
 		self.helpPage()
 		self.aboutPage()
 
-		self.homeButton = QPushButton(self)
+		self.homeButton = QPushButton("Home", self)
 		self.homeButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.homeButton.setObjectName("homeButton")
-		self.homeButton.setText("Home")
+		# self.homeButton.setIcon(QIcon('./home.png'))
+		# self.homeButton.setIconSize(QtCore.QSize(130,130))
 		self.homeButton.clicked.connect(lambda: self.switchPage(0))
-		
-		self.helpButton = QPushButton(self)
+
+		self.helpButton = QPushButton("Help", self)
 		self.helpButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.helpButton.setObjectName("helpButton")
-		self.helpButton.setText("Help")
 		self.helpButton.clicked.connect(lambda: self.switchPage(1))
 
-		self.aboutButton = QPushButton(self)
+		self.aboutButton = QPushButton("About", self)
 		self.aboutButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.aboutButton.setObjectName("aboutButton")
-		self.aboutButton.setText("About")
 		self.aboutButton.clicked.connect(lambda: self.switchPage(2))
+		# self.aboutButton.clicked.connect(hideWindow)
 
 		self.sidePane.addWidget(self.homeButton)
 		self.sidePane.addWidget(self.helpButton)
 		self.sidePane.addWidget(self.aboutButton)
+
+		self.setStyleSheet(themeStylesheet)
+
 
 		self.mainLayout.addWidget(self.titleLabel, 0, 1, 1, 5)
 		self.mainLayout.addLayout(self.sidePane, 1, 0, 5, 1)
@@ -62,8 +114,50 @@ class Window(QWidget):
 
 	def homePage(self):
 		self.page1 = QWidget()
-		self.page1Layout = QVBoxLayout()
-		self.page1Layout.addWidget(QLabel("Home"))
+		self.page1Layout = QGridLayout()
+
+		option1 = QLabel("Face-to-screen distance", self)
+		option1.setObjectName('option1')
+
+		switch1 = QPushButton("On", self)
+		switch1.setCheckable(True)
+		switch1.clicked.connect(lambda: self.changeColor(switch1))
+		switch1.setObjectName('switch1')
+
+		option2 = QLabel("Blink detection", self)
+		option2.setObjectName('option2')
+
+		switch2 = QPushButton("On", self)
+		switch2.setCheckable(True)
+		switch2.clicked.connect(lambda: self.changeColor(switch2))
+		switch2.setObjectName('switch2')
+
+		option3 = QLabel("Excercise animation", self)
+		option3.setObjectName('option3')
+
+		switch3 = QPushButton("On", self)
+		switch3.setCheckable(True)
+		switch3.clicked.connect(lambda: self.changeColor(switch3))
+		switch3.setObjectName('switch2')
+
+		option4 = QLabel("Work time detection", self)
+		option4.setObjectName('option4')
+
+		switch4 = QPushButton("On", self)
+		switch4.setCheckable(True)
+		switch4.clicked.connect(lambda: self.changeColor(switch4))
+		switch4.setObjectName('switch2')
+
+		self.page1Layout.addWidget(option1, 1, 0)
+		self.page1Layout.addWidget(option2, 2, 0)
+		self.page1Layout.addWidget(option3, 3, 0)
+		self.page1Layout.addWidget(option4, 4, 0)
+
+		self.page1Layout.addWidget(switch1, 1, 1)
+		self.page1Layout.addWidget(switch2, 2, 1)
+		self.page1Layout.addWidget(switch3, 3, 1)
+		self.page1Layout.addWidget(switch4, 4, 1)
+
 		self.page1.setLayout(self.page1Layout)
 		self.stackedLayout.addWidget(self.page1)
 
@@ -71,7 +165,18 @@ class Window(QWidget):
 		# Create the second page
 		self.page2 = QWidget()
 		self.page2Layout = QVBoxLayout()
-		self.page2Layout.addWidget(QLabel("Help"))
+
+		title1 = QLabel("<h1>Face-to-screen distance</h1>", self)
+		title1.setObjectName('title1')
+		title1.setAlignment(Qt.AlignTop)
+
+		text1 = QLabel("<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", self)
+		text1.setObjectName('text1')
+		text1.setAlignment(Qt.AlignTop)
+
+		self.page2Layout.addWidget(title1)
+		self.page2Layout.addWidget(text1)
+
 		self.page2.setLayout(self.page2Layout)
 		self.stackedLayout.addWidget(self.page2)
 
@@ -81,6 +186,18 @@ class Window(QWidget):
 		self.page3Layout.addWidget(QLabel("About"))
 		self.page3.setLayout(self.page3Layout)
 		self.stackedLayout.addWidget(self.page3)
+
+	def changeColor(self, button):
+		if button.isChecked():
+			button.setStyleSheet("background-color : red")
+			button.setText("Off")
+		else:
+			button.setStyleSheet("background-color : green")
+			button.setText("On")
+
+
+# def hideWindow():
+# 	window.hide()
 
 
 if __name__ == "__main__":
