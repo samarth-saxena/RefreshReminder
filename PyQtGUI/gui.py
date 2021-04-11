@@ -39,9 +39,15 @@ class Window(QWidget):
 
 			}
 
-			QWidget#titlePane {
+			QWidget#quitPane {
 				margin: 0px;
 				padding: 0px;
+				border:0px;
+				background-color: #2c7873;
+			}
+
+			QWidget#titlePane {
+				margin: 0px;
 				border:0px;
 			}
 
@@ -49,16 +55,18 @@ class Window(QWidget):
 				font-family: Quicksand;
 				font-size: 60px;
 				font-weight: bold;
+				padding: 20px 10px;
+
 			}
 
 			QPushButton {
 				margin: 0px;
-				padding: 30px 50px;
+				padding: 20px 50px;
 				background-color: #2c7873;
 				color: white;
 				border: none;
 				font-family: "Open Sans";
-				font-weight: bold;
+				font-size: 20px;
 			}
 
 			QPushButton#switch1, #switch2, #switch3, #switch4 {
@@ -66,11 +74,12 @@ class Window(QWidget):
 				background-color:green;
 				max-width: 50px;
 				height: 30px;
-
+				font-weight: bold;
+				font-size:15px;
 			}
 
 			QLabel#option1, #option2, #option3, #option4 {
-				font-size:20px;
+				font-size:16px;
 			}
 
 			QPushButton::hover {
@@ -85,6 +94,7 @@ class Window(QWidget):
 		self.sidePaneLayout = QVBoxLayout()
 		self.titlePaneLayout = QHBoxLayout()
 		self.stackedLayout = QStackedLayout()
+		# self.quitPaneLayout = QVBoxLayout()
 		self.VSpacer = QVBoxLayout()
 		self.VSpacer.addStretch(1)
 		self.HSpacer = QHBoxLayout()
@@ -96,14 +106,27 @@ class Window(QWidget):
 		self.sidePane.setObjectName("sidePane")
 		self.titlePane = QWidget(self)
 		self.titlePane.setObjectName("titlePane")
+		# self.quitPane = QWidget(self)
+		# self.quitPane.setObjectName("quitPane")
 
 		self.titleLabel = QLabel("Refresh Reminder", self)
 		# self.titleLabel.setGeometry(QtCore.QRect(100, 100, 371, 141))
 		self.titleLabel.setObjectName("titleLabel")
 
 		self.homePage()
+		self.settingsPage()
 		self.helpPage()
 		self.aboutPage()
+
+		self.exitButton = QPushButton("Exit", self)
+		self.exitButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		self.exitButton.setObjectName("exitButton")
+		self.exitButton.clicked.connect(exitApp)
+
+		self.hideButton = QPushButton("Hide", self)
+		self.hideButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		self.hideButton.setObjectName("hideButton")
+		self.hideButton.clicked.connect(hideApp)
 
 		self.homeButton = QPushButton("Home", self)
 		self.homeButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
@@ -111,39 +134,58 @@ class Window(QWidget):
 		# self.homeButton.setIcon(QIcon('./home.png'))
 		# self.homeButton.setIconSize(QtCore.QSize(130,130))
 		self.homeButton.clicked.connect(lambda: self.switchPage(0))
-
+		
+		self.settingsButton = QPushButton("Settings", self)
+		self.settingsButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		self.settingsButton.setObjectName("settingsButton")
+		self.settingsButton.clicked.connect(lambda: self.switchPage(1))
+		
 		self.helpButton = QPushButton("Help", self)
 		self.helpButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.helpButton.setObjectName("helpButton")
-		self.helpButton.clicked.connect(lambda: self.switchPage(1))
+		self.helpButton.clicked.connect(lambda: self.switchPage(2))
 
 		self.aboutButton = QPushButton("About", self)
 		self.aboutButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.aboutButton.setObjectName("aboutButton")
-		self.aboutButton.clicked.connect(lambda: self.switchPage(2))
+		self.aboutButton.clicked.connect(lambda: self.switchPage(3))
 		# self.aboutButton.clicked.connect(hideWindow)
 
-		self.sidePaneLayout.addWidget(self.homeButton, 0)
-		self.sidePaneLayout.addWidget(self.helpButton, 0)
-		self.sidePaneLayout.addWidget(self.aboutButton, 0)
+		self.sidePaneLayout.addWidget(self.exitButton, 0, Qt.AlignTop)
+		self.sidePaneLayout.addWidget(self.hideButton, 0, Qt.AlignTop)
 		self.sidePaneLayout.addStretch(1)
-		self.sidePaneLayout.setAlignment(Qt.AlignTop)
+		self.sidePaneLayout.addWidget(self.homeButton, 0, Qt.AlignTop)
+		self.sidePaneLayout.addWidget(self.settingsButton, 0, Qt.AlignTop)
+		self.sidePaneLayout.addWidget(self.helpButton, 0, Qt.AlignTop)
+		self.sidePaneLayout.addWidget(self.aboutButton, 0, Qt.AlignTop)
+		self.sidePaneLayout.addStretch(1)
+		self.sidePaneLayout.setContentsMargins(0,0,0,0)
+		# self.sidePaneLayout.setAlignment()
+
+		# self.quitPaneLayout.addWidget(self.exitButton, 0, Qt.AlignCenter)
+		# self.quitPaneLayout.addWidget(self.hideButton, 0, Qt.AlignCenter)
+		# self.quitPaneLayout.setContentsMargins(0,0,0,0)
 
 
 		self.setStyleSheet(themeStylesheet)
 
 		# self.titlePaneLayout.addStretch()
 		self.titlePaneLayout.addWidget(self.titleLabel, 0, Qt.AlignCenter)
+		self.titlePaneLayout.setContentsMargins(0,0,0,0)
 		# self.titlePaneLayout.addStretch(40)
 		# self.titlePaneLayout.setAlignment(self.titleLabel, Qt.AlignCenter)
 
 
-		self.mainLayout.addWidget(self.titlePane, 0, 0, 1, 2)
-		self.mainLayout.addWidget(self.sidePane, 1, 0, 1, 1)
-		self.mainLayout.addLayout(self.stackedLayout, 1, 1, 1, 1)
+		# self.mainLayout.addWidget(self.quitPane, 0, 0)
+		self.mainLayout.addWidget(self.titlePane, 0, 1)
+		self.mainLayout.addWidget(self.sidePane, 0, 0, 2, 1)
+		self.mainLayout.addLayout(self.stackedLayout, 1, 1)
+		self.mainLayout.setContentsMargins(0,0,0,0)
+		self.mainLayout.setSpacing(0)
 		# self.mainLayout.setSpacing(50)
 
 		# Setting layouts
+		# self.quitPane.setLayout(self.quitPaneLayout)
 		self.titlePane.setLayout(self.titlePaneLayout)
 		self.sidePane.setLayout(self.sidePaneLayout)
 		self.setLayout(self.mainLayout)
@@ -220,7 +262,7 @@ class Window(QWidget):
 		self.page1.setLayout(self.page1Layout)
 		self.stackedLayout.addWidget(self.page1)
 
-	def helpPage(self):
+	def settingsPage(self):
 		# Create the second page
 		self.page2 = QWidget()
 		self.page2Layout = QVBoxLayout()
@@ -239,12 +281,31 @@ class Window(QWidget):
 		self.page2.setLayout(self.page2Layout)
 		self.stackedLayout.addWidget(self.page2)
 
-	def aboutPage(self):
+	def helpPage(self):
+		# Create the second page
 		self.page3 = QWidget()
 		self.page3Layout = QVBoxLayout()
-		self.page3Layout.addWidget(QLabel("About"))
+
+		title1 = QLabel("<h1>Face-to-screen distance</h1>", self)
+		title1.setObjectName('title1')
+
+		text1 = QLabel("<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", self)
+		text1.setObjectName('text1')
+		text1.setWordWrap(True)
+
+		self.page3Layout.addWidget(title1)
+		self.page3Layout.addWidget(text1)
+		self.page3Layout.setAlignment(Qt.AlignTop)
+
 		self.page3.setLayout(self.page3Layout)
 		self.stackedLayout.addWidget(self.page3)
+
+	def aboutPage(self):
+		self.page4 = QWidget()
+		self.page4Layout = QVBoxLayout()
+		self.page4Layout.addWidget(QLabel("About"))
+		self.page4.setLayout(self.page4Layout)
+		self.stackedLayout.addWidget(self.page4)
 
 	def changeColor(self, button):
 		if button.isChecked():
@@ -253,6 +314,12 @@ class Window(QWidget):
 		else:
 			button.setStyleSheet("background-color : green")
 			button.setText("On")
+
+def exitApp(self):
+	sys.exit(0)
+
+def hideApp(self):
+	window.hide()
 
 
 # def hideWindow():
