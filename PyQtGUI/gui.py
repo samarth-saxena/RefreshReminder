@@ -13,35 +13,46 @@ import sys
 class Window(QWidget):
 	def __init__(self):
 		super().__init__()
-		self.mainWidget = self
-		self.mainWidget.setObjectName("mainWidget")
-		print (self.mainWidget.objectName())
+
+		#Window Setup
 		self.setWindowTitle("Refresh Reminder - Main Window")
 		self.setMinimumSize(800, 400)
-		# Create a QGridLayout instance
-		self.mainLayout = QGridLayout()
-		self.sidePane = QVBoxLayout()
-		# self.sidePaneWidget = QWidget(self.sidePane)
-		self.sidePane.setObjectName("sidePaneWidget")
-		self.stackedLayout = QStackedLayout()
+		self.setWindowFlag(Qt.FramelessWindowHint)
 
+
+		#Main Stylesheet
 		themeStylesheet = ("""
 			QWidget#mainWidget {
 				margin: 0px;
 				padding: 0px;
 				text-align: center;
 				background-color: #6fb98f;
+				border:1px;
+			}
+
+
+			QWidget#sidePane {
+				margin: 0px;
+				padding: 0px;
+				background-color: #2c7873;
+				border:0px;
 
 			}
 
+			QWidget#titlePane {
+				margin: 0px;
+				padding: 0px;
+				border:0px;
+			}
+
 			QLabel#titleLabel {
-				padding: 30px;
 				font-family: Quicksand;
 				font-size: 60px;
 				font-weight: bold;
 			}
 
 			QPushButton {
+				margin: 0px;
 				padding: 30px 50px;
 				background-color: #2c7873;
 				color: white;
@@ -54,12 +65,11 @@ class Window(QWidget):
 				padding: 10px 20px;
 				background-color:green;
 				max-width: 50px;
-				max-height: 50px;
+				height: 30px;
 
 			}
 
 			QLabel#option1, #option2, #option3, #option4 {
-				padding-left: 100px;
 				font-size:20px;
 			}
 
@@ -68,6 +78,25 @@ class Window(QWidget):
 			}
 
 		""")
+
+	
+		#Layouts
+		self.mainLayout = QGridLayout()
+		self.sidePaneLayout = QVBoxLayout()
+		self.titlePaneLayout = QHBoxLayout()
+		self.stackedLayout = QStackedLayout()
+		self.VSpacer = QVBoxLayout()
+		self.VSpacer.addStretch(1)
+		self.HSpacer = QHBoxLayout()
+		self.HSpacer.addStretch(1)
+
+		#Widgets
+		self.setObjectName("mainWidget")
+		self.sidePane = QWidget(self)
+		self.sidePane.setObjectName("sidePane")
+		self.titlePane = QWidget(self)
+		self.titlePane.setObjectName("titlePane")
+
 		self.titleLabel = QLabel("Refresh Reminder", self)
 		# self.titleLabel.setGeometry(QtCore.QRect(100, 100, 371, 141))
 		self.titleLabel.setObjectName("titleLabel")
@@ -94,20 +123,31 @@ class Window(QWidget):
 		self.aboutButton.clicked.connect(lambda: self.switchPage(2))
 		# self.aboutButton.clicked.connect(hideWindow)
 
-		self.sidePane.addWidget(self.homeButton)
-		self.sidePane.addWidget(self.helpButton)
-		self.sidePane.addWidget(self.aboutButton)
+		self.sidePaneLayout.addWidget(self.homeButton, 0)
+		self.sidePaneLayout.addWidget(self.helpButton, 0)
+		self.sidePaneLayout.addWidget(self.aboutButton, 0)
+		self.sidePaneLayout.addStretch(1)
+		self.sidePaneLayout.setAlignment(Qt.AlignTop)
+
 
 		self.setStyleSheet(themeStylesheet)
 
+		# self.titlePaneLayout.addStretch()
+		self.titlePaneLayout.addWidget(self.titleLabel, 0, Qt.AlignCenter)
+		# self.titlePaneLayout.addStretch(40)
+		# self.titlePaneLayout.setAlignment(self.titleLabel, Qt.AlignCenter)
 
-		self.mainLayout.addWidget(self.titleLabel, 0, 1, 1, 5)
-		self.mainLayout.addLayout(self.sidePane, 1, 0, 5, 1)
-		self.mainLayout.addLayout(self.stackedLayout, 1, 1, 5, 5)
+
+		self.mainLayout.addWidget(self.titlePane, 0, 0, 1, 2)
+		self.mainLayout.addWidget(self.sidePane, 1, 0, 1, 1)
+		self.mainLayout.addLayout(self.stackedLayout, 1, 1, 1, 1)
 		# self.mainLayout.setSpacing(50)
 
-		# Set the layout on the application's window
+		# Setting layouts
+		self.titlePane.setLayout(self.titlePaneLayout)
+		self.sidePane.setLayout(self.sidePaneLayout)
 		self.setLayout(self.mainLayout)
+
 
 	def switchPage(self, num):
 		self.stackedLayout.setCurrentIndex(num)
@@ -115,48 +155,67 @@ class Window(QWidget):
 	def homePage(self):
 		self.page1 = QWidget()
 		self.page1Layout = QGridLayout()
+		
 
-		option1 = QLabel("Face-to-screen distance", self)
+		spacingBox1 = QWidget(self.page1)
+		spacingBox1.setLayout(self.VSpacer)
+
+		option1 = QLabel("Face-to-screen distance", self.page1)
 		option1.setObjectName('option1')
 
-		switch1 = QPushButton("On", self)
+		switch1 = QPushButton("On", self.page1)
 		switch1.setCheckable(True)
 		switch1.clicked.connect(lambda: self.changeColor(switch1))
 		switch1.setObjectName('switch1')
+		switch1.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
-		option2 = QLabel("Blink detection", self)
+		option2 = QLabel("Blink detection", self.page1)
 		option2.setObjectName('option2')
 
-		switch2 = QPushButton("On", self)
+		switch2 = QPushButton("On", self.page1)
 		switch2.setCheckable(True)
 		switch2.clicked.connect(lambda: self.changeColor(switch2))
 		switch2.setObjectName('switch2')
+		switch2.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
-		option3 = QLabel("Excercise animation", self)
+
+		option3 = QLabel("Excercise animation", self.page1)
 		option3.setObjectName('option3')
 
-		switch3 = QPushButton("On", self)
+		switch3 = QPushButton("On", self.page1)
 		switch3.setCheckable(True)
 		switch3.clicked.connect(lambda: self.changeColor(switch3))
 		switch3.setObjectName('switch2')
+		switch3.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
-		option4 = QLabel("Work time detection", self)
+		option4 = QLabel("Work time detection", self.page1)
 		option4.setObjectName('option4')
 
 		switch4 = QPushButton("On", self)
 		switch4.setCheckable(True)
 		switch4.clicked.connect(lambda: self.changeColor(switch4))
 		switch4.setObjectName('switch2')
+		switch4.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
-		self.page1Layout.addWidget(option1, 1, 0)
-		self.page1Layout.addWidget(option2, 2, 0)
-		self.page1Layout.addWidget(option3, 3, 0)
-		self.page1Layout.addWidget(option4, 4, 0)
 
-		self.page1Layout.addWidget(switch1, 1, 1)
-		self.page1Layout.addWidget(switch2, 2, 1)
-		self.page1Layout.addWidget(switch3, 3, 1)
-		self.page1Layout.addWidget(switch4, 4, 1)
+		spacingBox2 = QWidget(self.page1)
+		spacingBox2.setLayout(self.VSpacer)
+
+		self.page1Layout.addWidget(spacingBox1, 0, 0, 5, 1)
+
+		self.page1Layout.addWidget(option1, 1, 1)
+		self.page1Layout.addWidget(option2, 2, 1)
+		self.page1Layout.addWidget(option3, 3, 1)
+		self.page1Layout.addWidget(option4, 4, 1)
+
+		self.page1Layout.addWidget(switch1, 1, 2)
+		self.page1Layout.addWidget(switch2, 2, 2)
+		self.page1Layout.addWidget(switch3, 3, 2)
+		self.page1Layout.addWidget(switch4, 4, 2)
+
+		self.page1Layout.addWidget(spacingBox2, 0, 3, 5, 1)
+
+		self.page1Layout.setAlignment(Qt.AlignTop)
 
 		self.page1.setLayout(self.page1Layout)
 		self.stackedLayout.addWidget(self.page1)
@@ -168,14 +227,14 @@ class Window(QWidget):
 
 		title1 = QLabel("<h1>Face-to-screen distance</h1>", self)
 		title1.setObjectName('title1')
-		title1.setAlignment(Qt.AlignTop)
 
 		text1 = QLabel("<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", self)
 		text1.setObjectName('text1')
-		text1.setAlignment(Qt.AlignTop)
+		text1.setWordWrap(True)
 
 		self.page2Layout.addWidget(title1)
 		self.page2Layout.addWidget(text1)
+		self.page2Layout.setAlignment(Qt.AlignTop)
 
 		self.page2.setLayout(self.page2Layout)
 		self.stackedLayout.addWidget(self.page2)
@@ -203,6 +262,7 @@ class Window(QWidget):
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
 	window = Window()
+	
 	window.show()
 	sys.exit(app.exec_())
 
