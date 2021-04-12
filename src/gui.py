@@ -3,12 +3,7 @@ import main
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import (
-	QApplication,
-	QMainWindow, QWidget,
-	QPushButton, QLabel,
-	QHBoxLayout, QVBoxLayout, QGridLayout, QStackedLayout
-)
+from PyQt5.QtWidgets import QApplication, QGridLayout, QHBoxLayout, QLabel, QMainWindow, QPushButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
 import sys
 
 
@@ -73,7 +68,7 @@ class Window(QWidget):
 
 			QPushButton#switch1, #switch2, #switch3, #switch4 {
 				padding: 10px 20px;
-				background-color:green;
+				background-color:red;
 				max-width: 50px;
 				height: 30px;
 				font-weight: bold;
@@ -123,12 +118,12 @@ class Window(QWidget):
 		self.exitButton = QPushButton("Exit", self)
 		self.exitButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.exitButton.setObjectName("exitButton")
-		self.exitButton.clicked.connect(exitApp)
+		self.exitButton.clicked.connect(self.exitApp)
 
 		self.hideButton = QPushButton("Hide", self)
 		self.hideButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.hideButton.setObjectName("hideButton")
-		self.hideButton.clicked.connect(hideApp)
+		self.hideButton.clicked.connect(self.hideApp)
 
 		self.homeButton = QPushButton("Home", self)
 		self.homeButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
@@ -207,37 +202,36 @@ class Window(QWidget):
 		option1 = QLabel("Face-to-screen distance", self.page1)
 		option1.setObjectName('option1')
 
-		switch1 = QPushButton("On", self.page1)
+		switch1 = QPushButton("Off", self.page1)
 		switch1.setCheckable(True)
-		switch1.clicked.connect(lambda: self.changeColor(switch1))
+		switch1.clicked.connect(lambda: self.changeColor(switch1, 1))
 		switch1.setObjectName('switch1')
 		switch1.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
 		option2 = QLabel("Blink detection", self.page1)
 		option2.setObjectName('option2')
 
-		switch2 = QPushButton("On", self.page1)
+		switch2 = QPushButton("Off", self.page1)
 		switch2.setCheckable(True)
-		switch2.clicked.connect(lambda: self.changeColor(switch2))
+		switch2.clicked.connect(lambda: self.changeColor(switch2, 2))
 		switch2.setObjectName('switch2')
 		switch2.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
-
 
 		option3 = QLabel("Excercise animation", self.page1)
 		option3.setObjectName('option3')
 
-		switch3 = QPushButton("On", self.page1)
+		switch3 = QPushButton("Off", self.page1)
 		switch3.setCheckable(True)
-		switch3.clicked.connect(lambda: self.changeColor(switch3))
+		switch3.clicked.connect(lambda: self.changeColor(switch3, 3))
 		switch3.setObjectName('switch2')
 		switch3.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
 		option4 = QLabel("Work time detection", self.page1)
 		option4.setObjectName('option4')
 
-		switch4 = QPushButton("On", self)
+		switch4 = QPushButton("Off", self)
 		switch4.setCheckable(True)
-		switch4.clicked.connect(lambda: self.changeColor(switch4))
+		switch4.clicked.connect(lambda: self.changeColor(switch4, 4))
 		switch4.setObjectName('switch2')
 		switch4.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
@@ -311,46 +305,54 @@ class Window(QWidget):
 		self.page4.setLayout(self.page4Layout)
 		self.stackedLayout.addWidget(self.page4)
 
-	def changeColor(self, button):
+	def changeColor(self, button, n):
 		if button.isChecked():
-			button.setStyleSheet("background-color : red")
-			button.setText("Off")
-		else:
 			button.setStyleSheet("background-color : green")
 			button.setText("On")
-
-def exitApp():
-	sys.exit(0)
-
-def hideApp():
-	window.close()
-
-def showApp():
-	window.show()
+			flag[n-1] = True
+			print(n, "True")			
+		else:
+			button.setStyleSheet("background-color : red")
+			button.setText("Off")
+			flag[n-1] = False
+			print(n, "False")
 
 
-# def hideWindow():
-# 	window.hide()
+	def exitApp(self):
+		sys.exit(0)
+
+	def hideApp(self):
+		global readytogo
+		readytogo = True
+		self.close()
+
+	def showApp(self):
+		self.show()
+
+readytogo = False
+flag = [False, False, False, False] 
 
 
-# app = QApplication(sys.argv)
-# window = Window()
-# showApp()
-# app.exec_()
-
-if __name__ == "__main__":
+# if __name__ == "__main__":
+def launchApp():
 	app = QApplication(sys.argv)
 	window = Window()
 	window.show()
 
+	icon = QIcon("home.png")
+	tray = QSystemTrayIcon()
+	tray.setIcon(icon)
+	tray.setVisible(True)
 	# thread1 = main.faceDistance(1, "Thread-1", 1)
 	# thread2 = main.screenUsage(2, "Thread-2", 2)
 
-	# # Start new Threads
-	# thread1.start()
-	# thread2.start()
+	# if(readytogo):
+	# 	if(flag[0]):
+	# 		thread1.start()
+	# 	if(flag[1]):
+	# 		thread2.start()
 
-	sys.exit(app.exec_())
+	app.exec_()
 
 # class mainWindow(QMainWindow):
 #     def __init__(self):

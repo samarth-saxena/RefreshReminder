@@ -58,7 +58,7 @@ class faceDistance (threading.Thread):
 			ratio = hor_line_lenght / ver_line_lenght
 			return ratio
 			
-		while True:
+		while (gui.flag[0]):
 			_, frame = inp.read()
 
 			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -75,7 +75,7 @@ class faceDistance (threading.Thread):
 					# print(w*h)
 						# win = windows.createPostureWin()
 
-					if w * h > 6/5 * storeData:
+					if w * h > 2 * storeData: #6/5
 						# win.showWin()
 						# windows.createPostureWin()
 						cv2.putText(frame, 'Too Close!', (x - 3, y - 3), font, 1, (255, 255, 255), 2)
@@ -117,7 +117,7 @@ class screenUsage(threading.Thread):
 	def run(self):
 		try:
 			work = 0
-			while True:
+			while gui.flag[3]:
 				temp = get_idle_duration()
 				if (temp<5):
 					work+=1
@@ -130,20 +130,31 @@ class screenUsage(threading.Thread):
 					# windows.createRefreshWin()
 					work=0
 				time.sleep(1)
+				if (gui.readytogo == False):
+					break
 
 		except KeyboardInterrupt:
 			print('\n')
 
 
-# if __name__=="__main__":
-# 	gui.showApp()
+if __name__=="__main__":
+	gui.launchApp()
 
-# 	toaster = ToastNotifier()
-# 	toaster.show_toast("Refresh reminder","Take a break to refresh!",duration=10, threaded=True)
+	# toaster = ToastNotifier()
+	# toaster.show_toast("Refresh reminder","Take a break to refresh!",duration=10, threaded=True)
 
-# 	thread1 = faceDistance(1, "Thread-1", 1)
-# 	thread2 = screenUsage(2, "Thread-2", 2)
+	TFaceDistance = faceDistance(1, "Thread-1", 1)
+	TScreenUsage = screenUsage(2, "Thread-2", 2)
 
-# 	# Start new Threads
-# 	thread1.start()
-# 	thread2.start()
+	if(gui.readytogo):
+		if(gui.flag[0]):
+			TFaceDistance.start()
+		if(gui.flag[3]):
+			TScreenUsage.start()
+	try:
+		while(True):
+			if(gui.readytogo == False):
+				TFaceDistance.join()
+				TScreenUsage.join()
+	except KeyboardInterrupt:
+		print('\n')
