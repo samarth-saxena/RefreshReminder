@@ -13,7 +13,7 @@ import exercise
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QFile, Qt, pyqtSignal, QObject
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QRadioButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAction, QApplication, QDialog, QDialogButtonBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QMenu, QPushButton, QRadioButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
 import sys
 
 readytogo = False
@@ -22,6 +22,7 @@ winNotif = False
 breaktime = False
 
 app = QApplication(sys.argv)
+app.setQuitOnLastWindowClosed(False)
 screen = app.primaryScreen()
 size = screen.size()
 
@@ -726,6 +727,30 @@ if __name__=="__main__":
 
 	window.show()
 
+	icon = QIcon("../Assets/smile.ico")
+  
+	# Adding item on the menu bar
+	tray = QSystemTrayIcon()
+	tray.setIcon(icon)
+	tray.setVisible(True)
+
+	menu = QMenu()
+	text = "Refresh Reminder"
+	option1 = QAction("Open settings")
+	option2 = QAction("Option 2")
+	# menu.addSection(text)
+	menu.addAction(option1)
+	menu.addSeparator()
+	menu.addAction(option2)
+	option1.triggered.connect(launchMainWindow)
+	
+	# To quit the app
+	quit = QAction("Quit")
+	quit.triggered.connect(app.quit)
+	menu.addAction(quit)
+	
+	# Adding options to the System Tray
+	tray.setContextMenu(menu)
 
 	TFaceDistance = faceDistance(1, "Thread-1", 1)
 	TScreenUsage = screenUsage(2, "Thread-2", 2)
