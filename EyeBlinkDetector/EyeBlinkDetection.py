@@ -28,7 +28,7 @@ def get_BlinkRatio(eye_points, facial_landmarks):
     return ratio
 
 count=0
-TimeBetweenEyeBlink = 10
+TimeBetweenEyeBlink = 4
 while True:
     _, frame = cap.read()
     frame = cv2.flip(frame,1)

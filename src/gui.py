@@ -17,7 +17,8 @@ from PyQt5.QtWidgets import QAction, QApplication, QDialog, QDialogButtonBox, QF
 import sys
 
 readytogo = False
-flag = [False, False, False, False]
+# 0=FaceScreen Distance,  1=Eye blink, 2=Exercise, 3=screen usage 
+flag = [False, False, False, False] 
 winNotif = False
 breaktime = False
 
@@ -98,6 +99,68 @@ class postureWindow(QMainWindow):
 		self.hide()
 		c.exitApp.emit() #TODO Remove this line
 
+class blinkWindow(QMainWindow):
+	def __init__(self, height, width):
+		super(blinkWindow, self).__init__()
+
+		self.setWindowTitle("blinkWindow")
+		self.setWindowFlag(Qt.FramelessWindowHint)
+		self.setWindowFlag(Qt.WindowStaysOnTopHint)
+		# ui.setWindowOpacity(0)
+		# ui.setAttribute(Qt.WA_NoSystemBackground, True)
+		self.setAttribute(Qt.WA_TranslucentBackground, True)
+		self.setStyleSheet("border : 10px solid blue;")
+		self.setFixedSize(width, height)
+		self.setupUi()
+
+	def setupUi(self):
+		self.setObjectName("blinkWindow")
+		self.framelayout = QHBoxLayout()
+		
+		self.centralWidget = QWidget(self)
+		self.centralWidget.setObjectName("centralwidget")
+		# self.okButton = QPushButton(self.centralwidget)
+		# self.okButton.setGeometry(QtCore.QRect(380, 330, 231, 111))
+		# self.okButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		# self.okButton.setFlat(False)
+		# self.okButton.setObjectName("okButton")
+		# self.okButton.setStyleSheet("border: 5px solid black")
+
+		self.exitButton = QPushButton("BLINK", self.centralWidget)
+		self.exitButton.setObjectName("exitButton")
+		self.exitButton.setStyleSheet(
+			"border: 5px solid blue; background-color: blue; color:white;")
+		self.exitButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		self.exitButton.clicked.connect(self.closeWin)
+
+		# self.titleLabel = QLabel(self.centralwidget)
+		# self.titleLabel.setGeometry(QtCore.QRect(170, 120, 371, 141))
+		# self.titleLabel.setObjectName("titleLabel")
+
+		font = QtGui.QFont()
+		font.setFamily("Quicksand")
+		font.setBold(True)
+		font.setWeight(80)
+		font.setPointSize(48)
+		# self.titleLabel.setFont(font)
+
+		# font.setPointSize(20)
+		# self.okButton.setFont(font)
+
+		font.setPointSize(14)
+		self.exitButton.setFont(font)
+		
+		self.setCentralWidget(self.centralWidget)
+
+
+		# self.okButton.setText("Okay")
+		# self.exitButton.setText()
+		# self.titleLabel.setText("Sitting too close!!")
+
+
+	def closeWin(self):
+		self.hide()
+		c.exitApp.emit() #TODO Remove this line
 
 
 # def createPostureWin():
@@ -123,28 +186,56 @@ class breakPopup(QWidget):
 		self.setWindowTitle("Refresh Reminder - Break Popup")
 		self.setMinimumSize(800, 400)
 		self.setWindowFlag(Qt.FramelessWindowHint)
+		self.setObjectName("popup")
+		self.setWindowOpacity(0.75)
 
-		popupCSS = ""
+		popupCSS = """
+
+			QWidget#popup {
+				background-color: #ffbf00;
+			}
+
+			QPushButton#okButton, #settingsButton, #skipButton {
+				padding: 10px 20px;
+				background-color: ;
+				min-width: 100px;
+				height: 30px;
+				font-weight: bold;
+				font-size:15px;
+				border: 0px;
+			}
+
+			QLabel#titleLabel {
+				font-family: Quicksand;
+				font-size: 40px;
+				font-weight: bold;
+				padding: 20px 10px;
+			}
+		"""
 
 		self.mainLayout = QGridLayout()
 
 		self.okButton = QPushButton("Okay", self)
 		self.okButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.okButton.setObjectName("okButton")
+		self.okButton.setFlat(True)
 		self.okButton.clicked.connect(self.launchExercise)
 
 		self.settingsButton = QPushButton("Go to settings", self)
 		self.settingsButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.settingsButton.setObjectName("settingsButton")
+		self.okButton.setFlat(True)
 		self.settingsButton.clicked.connect(self.showMainWin)
 
 		self.skipButton = QPushButton("Skip", self)
 		self.skipButton.setObjectName("skipButton")
+		self.okButton.setFlat(True)
 		self.skipButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.skipButton.clicked.connect(self.hide)
 
 		self.titleLabel = QLabel("Its time for a break!", self)
 		self.titleLabel.setObjectName("titleLabel")
+
 
 		self.mainLayout.addWidget(self.titleLabel, 0, 0, 1, 3)
 		self.mainLayout.addWidget(self.settingsButton, 1, 0)
@@ -152,12 +243,14 @@ class breakPopup(QWidget):
 		self.mainLayout.addWidget(self.okButton, 1, 2)
 
 		self.setLayout(self.mainLayout)
+		self.setStyleSheet(popupCSS)
 
 	def launchExercise(self):
 		global breaktime
 		self.hide()
 		# print("Exercise")
-		exercise.exerciseAnimation()
+		if(flag[2]):
+			exercise.exerciseAnimation()
 		breaktime = False
 
 	def skipBreak(self):
@@ -172,13 +265,14 @@ class breakPopup(QWidget):
 class MainWindow(QWidget):
 	popup = breakPopup()
 	frame = postureWindow(size.height(), size.width())
+	blinkframe = blinkWindow(size.height(), size.width())
 
 	def __init__(self):
 		super().__init__()
 
 		#Window Setup
 		self.setWindowTitle("Refresh Reminder - Main Window")
-		self.setMinimumSize(800, 400)
+		self.setMinimumSize(800, 450)
 		self.setWindowFlag(Qt.FramelessWindowHint)
 
 		self.setupUI()
@@ -235,6 +329,14 @@ class MainWindow(QWidget):
 				text-align: left;
 			}
 
+			QPushButton#exitButton, #hideButton {
+				background-color: #2c6666;
+			}
+
+			QPushButton#exitButton::hover, #hideButton::hover{
+				background-color: #004445;
+			}
+
 			QPushButton#switch1, #switch2, #switch3, #switch4 {
 				padding: 10px 20px;
 				background-color:red;
@@ -284,27 +386,31 @@ class MainWindow(QWidget):
 		self.helpPage()
 		self.aboutPage()
 
-		self.exitButton = QPushButton("Exit", self)
+		self.exitButton = QPushButton(" Exit", self)
 		self.exitButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.exitButton.setObjectName("exitButton")
+		self.exitButton.setIcon(QIcon('../Assets/close.png'))
+		self.exitButton.setIconSize(QtCore.QSize(25,25))
 		self.exitButton.clicked.connect(self.initiateExitApp)
 
-		self.hideButton = QPushButton("Hide", self)
+		self.hideButton = QPushButton(" Hide", self)
 		self.hideButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.hideButton.setObjectName("hideButton")
+		self.hideButton.setIcon(QIcon('../Assets/minus2.png'))
+		self.hideButton.setIconSize(QtCore.QSize(25,25))
 		self.hideButton.clicked.connect(self.hideApp)
 
 		self.homeButton = QPushButton(" Home", self)
 		self.homeButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.homeButton.setObjectName("homeButton")
-		self.homeButton.setIcon(QIcon('../Assets/home.svg'))
+		self.homeButton.setIcon(QIcon('../Assets/home3.png'))
 		self.homeButton.setIconSize(QtCore.QSize(20,20))
 		self.homeButton.clicked.connect(lambda: self.switchPage(0))
 
 		self.settingsButton = QPushButton(" Settings", self)
 		self.settingsButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.settingsButton.setObjectName("settingsButton")
-		self.settingsButton.setIcon(QIcon('../Assets/settings.svg'))
+		self.settingsButton.setIcon(QIcon('../Assets/settings.png'))
 		self.settingsButton.setIconSize(QtCore.QSize(20,20))
 		self.settingsButton.clicked.connect(lambda: self.switchPage(1))
 
@@ -312,16 +418,19 @@ class MainWindow(QWidget):
 		self.helpButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.helpButton.setObjectName("helpButton")
 		self.helpButton.setObjectName("homeButton")
-		self.helpButton.setIcon(QIcon('../Assets/help.png'))
-		self.settingsButton.setIconSize(QtCore.QSize(20,20))
+		self.helpButton.setIcon(QIcon('../Assets/help2.png'))
+		self.helpButton.setIconSize(QtCore.QSize(20,20))
 		self.helpButton.clicked.connect(lambda: self.switchPage(2))
 
-		self.aboutButton = QPushButton("About", self)
+		self.aboutButton = QPushButton(" About", self)
 		self.aboutButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.aboutButton.setObjectName("aboutButton")
+		self.aboutButton.setIcon(QIcon('../Assets/info.png'))
+		self.aboutButton.setIconSize(QtCore.QSize(20,20))
 		self.aboutButton.clicked.connect(lambda: self.switchPage(3))
 		# self.aboutButton.clicked.connect(hideWindow)
 
+		self.sidePaneLayout.addStretch(1)
 		self.sidePaneLayout.addWidget(self.exitButton, 0, Qt.AlignTop)
 		self.sidePaneLayout.addWidget(self.hideButton, 0, Qt.AlignTop)
 		self.sidePaneLayout.addStretch(1)
@@ -462,10 +571,20 @@ class MainWindow(QWidget):
 		self.page3 = QWidget()
 		self.page3Layout = QVBoxLayout()
 
-		title1 = QLabel("<h1>Face-to-screen distance</h1>", self)
+		title1 = QLabel("<h1>Help Section</h1>", self)
 		title1.setObjectName('title1')
 
-		text1 = QLabel("<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", self)
+		text1 = QLabel("""<p><h4><b>Face-to-screen Distance</b>
+The application sets a baseline for the ideal distance you should be from your monitors, and then tracks your face in real time. If you sit too close to the screen, a warning pops-up and you can adjust yourself accordingly, reducing the strain on your eyes.
+<br>
+Blink Detection
+Every blink moistens the eyes, and dry eyes are painful and harmful. Healthy blinking is about 20-25 blinks per minute, but while working with screens, it goes down to 7-10 bpm. Our app warns you if this is happening with you, ensuring you and your eyes remain refreshed.
+<br>
+Exercise Animation
+After working continuosly, our body starts to slouch, which is very harmful in the long run, so we have implemented fun and short exercises which you can do on the spot. These exercises are AI guided, and ensure that you perform them correctly.
+<br>
+Work Time Detection
+We use activity monitoring to track your working duration, and give a reminder popup which has the option to either take a break, show any random exercise, or just go away(for when the deadline is just 15 minutes away!)</h4>""", self)
 		text1.setObjectName('text1')
 		text1.setWordWrap(True)
 
@@ -539,6 +658,14 @@ class MainWindow(QWidget):
 	def hidePostureFrame(cls):
 		MainWindow.frame.hide()
 
+	@classmethod
+	def launchBlinkFrame(cls):
+		MainWindow.blinkframe.show()
+	
+	@classmethod
+	def hideBlinkFrame(cls):
+		MainWindow.blinkframe.hide()
+
 	def initiateExitApp(self):
 		c.exitApp.emit()
 
@@ -604,7 +731,10 @@ class faceDistance (threading.Thread):
 			ratio = hor_line_lenght / ver_line_lenght
 			return ratio
 
-		while (flag[0]):
+		count=0
+		#Change time here
+		TimeBetweenEyeBlink = 3  
+		while (flag[0] or flag[1]):
 			_, frame = inp.read()
 
 			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -613,38 +743,55 @@ class faceDistance (threading.Thread):
 			frame = cv2.flip(frame,1)
 			faces = detector(gray)
 
+		
 			for (x, y, w, h) in facialScan:
-				if (w*h > 3000):
-					if storeData == 0:
-						storeData = w * h
+				if(flag[0]):
+					if (w*h > 3000):
+						if storeData == 0:
+							storeData = w * h
 
-					if w * h > 2 * storeData: #6/5
-						if(winNotif):
-							windowsNotification("You are sitting too close!!", 10)
-						else:						
-							MainWindow.launchPostureFrame()
-							# c.createPostureFrame.emit()
+						if w * h > 2 * storeData: #6/5
+							if(winNotif):
+								windowsNotification("You are sitting too close!!", 10)
+							else:						
+								MainWindow.launchPostureFrame()
+								# c.createPostureFrame.emit()
 
-						# cv2.putText(frame, 'Too Close!', (x - 3, y - 3), font, 1, (255, 255, 255), 2)
-						# cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-					else:
-						if(winNotif == False):
-							MainWindow.hidePostureFrame()
-					# 	cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+							# cv2.putText(frame, 'Too Close!', (x - 3, y - 3), font, 1, (255, 255, 255), 2)
+							# cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+						else:
+							if(winNotif == False):
+								MainWindow.hidePostureFrame()
+						# 	cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+				else:
+					break
 
+			
 			for face in faces:
-				landmarks = predictor(gray, face)
+				if(flag[1]):
+					landmarks = predictor(gray, face)
 
-				LeftEye_ratio = get_BlinkRatio([36, 37, 38, 39, 40, 41], landmarks)
-				RightEye_ratio = get_BlinkRatio([42, 43, 44, 45, 46, 47], landmarks)
+					LeftEye_ratio = get_BlinkRatio([36, 37, 38, 39, 40, 41], landmarks)
+					RightEye_ratio = get_BlinkRatio([42, 43, 44, 45, 46, 47], landmarks)
 
-				# use BlinkRatio for Results
-				BlinkRatio = (LeftEye_ratio + RightEye_ratio) / 2
+					# use BlinkRatio for Results
+					BlinkRatio = (LeftEye_ratio + RightEye_ratio) / 2
+					count+=1
 
-				if BlinkRatio > 3.7:
-					# means Eye is closed
-					cv2.putText(frame, "BLINKING", (75, 150), font, 6, (0, 0, 255)) #remove after integration with UI
-
+					#3.7
+					if BlinkRatio > 4.7:
+						# means Eye is closed
+						count=0
+						# print("count reset")
+					# if(count%10==0):
+					#     print(count)    
+					if count > (TimeBetweenEyeBlink * 20):
+						MainWindow.launchBlinkFrame()
+						cv2.putText(frame, "BLINK !!!", (75, 150), font, 3, (0, 255, 0)) #remove after integration with UI
+					else:
+						MainWindow.hideBlinkFrame()
+				else:
+					break
 
 			cv2.imshow('ComputerVision', frame)
 			key = cv2.waitKey(1)
@@ -698,7 +845,7 @@ class screenUsage(threading.Thread):
 
 
 def startupServices():
-	if(flag[0] & (TFaceDistance.is_alive()==False) ):
+	if((flag[0] or flag[1]) & (TFaceDistance.is_alive()==False) ):
 		TFaceDistance.start()
 	if(flag[3] & (TScreenUsage.is_alive()==False) ):
 		TScreenUsage.start()
@@ -726,6 +873,7 @@ if __name__=="__main__":
 	window = MainWindow()
 
 	window.show()
+	# MainWindow.launchBreakPopup()
 
 	icon = QIcon("../Assets/smile.ico")
   
@@ -746,7 +894,7 @@ if __name__=="__main__":
 	
 	# To quit the app
 	quit = QAction("Quit")
-	quit.triggered.connect(app.quit)
+	quit.triggered.connect(shutdownApp)
 	menu.addAction(quit)
 	
 	# Adding options to the System Tray
