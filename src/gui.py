@@ -307,9 +307,12 @@ class MainWindow(QWidget):
 		self.settingsButton.setIconSize(QtCore.QSize(20,20))
 		self.settingsButton.clicked.connect(lambda: self.switchPage(1))
 
-		self.helpButton = QPushButton("Help", self)
+		self.helpButton = QPushButton(" Help", self)
 		self.helpButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.helpButton.setObjectName("helpButton")
+		self.helpButton.setObjectName("homeButton")
+		self.helpButton.setIcon(QIcon('../Assets/help.png'))
+		self.settingsButton.setIconSize(QtCore.QSize(20,20))
 		self.helpButton.clicked.connect(lambda: self.switchPage(2))
 
 		self.aboutButton = QPushButton("About", self)
