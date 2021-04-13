@@ -9,7 +9,7 @@ import dlib
 from math import hypot
 
 import threading
-# import main
+import exercise
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QFile, Qt, pyqtSignal, QObject
 from PyQt5.QtGui import *
@@ -19,6 +19,7 @@ import sys
 readytogo = False
 flag = [False, False, False, False]
 winNotif = False
+breaktime = False
 
 app = QApplication(sys.argv)
 screen = app.primaryScreen()
@@ -152,8 +153,15 @@ class breakPopup(QWidget):
 		self.setLayout(self.mainLayout)
 
 	def launchExercise(self):
+		global breaktime
 		self.hide()
-		print("Exercise")
+		# print("Exercise")
+		exercise.exerciseAnimation()
+		breaktime = False
+
+	def skipBreak(self):
+		self.hide()
+		breaktime = False
 
 	def showMainWin(self):
 		self.hide()
@@ -223,6 +231,7 @@ class MainWindow(QWidget):
 				border: none;
 				font-family: "Open Sans";
 				font-size: 20px;
+				text-align: left;
 			}
 
 			QPushButton#switch1, #switch2, #switch3, #switch4 {
@@ -284,16 +293,18 @@ class MainWindow(QWidget):
 		self.hideButton.setObjectName("hideButton")
 		self.hideButton.clicked.connect(self.hideApp)
 
-		self.homeButton = QPushButton("Home", self)
+		self.homeButton = QPushButton(" Home", self)
 		self.homeButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.homeButton.setObjectName("homeButton")
-		# self.homeButton.setIcon(QIcon('smile.ico'))
-		# self.homeButton.setIconSize(QtCore.QSize(10,10))
+		self.homeButton.setIcon(QIcon('../Assets/home.svg'))
+		self.homeButton.setIconSize(QtCore.QSize(20,20))
 		self.homeButton.clicked.connect(lambda: self.switchPage(0))
 
-		self.settingsButton = QPushButton("Settings", self)
+		self.settingsButton = QPushButton(" Settings", self)
 		self.settingsButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.settingsButton.setObjectName("settingsButton")
+		self.settingsButton.setIcon(QIcon('../Assets/settings.svg'))
+		self.settingsButton.setIconSize(QtCore.QSize(20,20))
 		self.settingsButton.clicked.connect(lambda: self.switchPage(1))
 
 		self.helpButton = QPushButton("Help", self)
@@ -648,12 +659,16 @@ class screenUsage(threading.Thread):
 		self.counter = counter
 
 	def run(self):
+		global breaktime
 		try:
 			print("Screen thread started")
 			global winNotif
 
 			work = 0
 			while flag[3]:
+				if(breaktime):
+					work = 0
+					continue
 				temp = get_idle_duration()
 				if (temp<5):
 					work+=1
@@ -663,6 +678,7 @@ class screenUsage(threading.Thread):
 				print(work)
 				print()
 				if(work>10):
+					breaktime = True
 					if(winNotif):
 						windowsNotification("Time for a short break :)", 10)
 					else:
@@ -706,6 +722,7 @@ if __name__=="__main__":
 	window = MainWindow()
 
 	window.show()
+
 
 	TFaceDistance = faceDistance(1, "Thread-1", 1)
 	TScreenUsage = screenUsage(2, "Thread-2", 2)
