@@ -53,7 +53,7 @@ class breakPopup(QWidget):
 		self.skipButton = QPushButton("Skip", self)
 		self.skipButton.setObjectName("skipButton")
 		self.skipButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
-		self.skipButton.clicked.connect(self.close)
+		self.skipButton.clicked.connect(self.hide)
 
 		self.titleLabel = QLabel("Its time for a break!", self)
 		self.titleLabel.setObjectName("titleLabel")
@@ -66,11 +66,11 @@ class breakPopup(QWidget):
 		self.setLayout(self.mainLayout)
 
 	def launchExercise(self):
-		self.close()
+		self.hide()
 		print("Exercise")
 
 	def showMainWin(self):
-		self.close()
+		self.hide()
 		launchMainWindow()
 
 
@@ -401,7 +401,6 @@ class MainWindow(QWidget):
 	def launchBreakPopup(cls):
 		MainWindow.popup.show()
 
-	
 	def initiateExitApp(self):
 		c.exitApp.emit()
 
@@ -543,25 +542,24 @@ class screenUsage(threading.Thread):
 			# print("Point 4")
 			# global temp
 			# temp = True
-			c.createBreakPopup.emit()
 
 
-			# work = 0
-			# while True:
-			# 	temp = get_idle_duration()
-			# 	if (temp<5):
-			# 		work+=1
-			# 	else:
-			# 		work=0
-			# 	print(temp)
-			# 	print(work)
-			# 	print()
-			# 	if(work>10):
-			# 		# windows.createRefreshWin()
-			# 		work=0
-			# 	time.sleep(1)
-			# 	if (readytogo == False):
-			# 		break
+			work = 0
+			while flag[3]:
+				temp = get_idle_duration()
+				if (temp<5):
+					work+=1
+				else:
+					work=0
+				print(temp)
+				print(work)
+				print()
+				if(work>10):
+					# windows.createRefreshWin()
+					c.createBreakPopup.emit()
+					work=0
+				time.sleep(1)
+
 
 		except KeyboardInterrupt:
 			c.exitApp.emit()
