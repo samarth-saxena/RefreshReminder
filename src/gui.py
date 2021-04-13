@@ -275,7 +275,7 @@ class MainWindow(QWidget):
 
 		#Window Setup
 		self.setWindowTitle("Refresh Reminder - Main Window")
-		self.setMinimumSize(1100, 500)
+		self.setMinimumSize(1100, 450)
 		self.setWindowFlag(Qt.FramelessWindowHint)
 
 		self.setupUI()
@@ -441,7 +441,7 @@ class MainWindow(QWidget):
 		self.sidePaneLayout.addWidget(self.settingsButton, 0, Qt.AlignTop)
 		self.sidePaneLayout.addWidget(self.helpButton, 0, Qt.AlignTop)
 		self.sidePaneLayout.addWidget(self.aboutButton, 0, Qt.AlignTop)
-		self.sidePaneLayout.addStretch(1)
+		self.sidePaneLayout.addStretch(2)
 		self.sidePaneLayout.setContentsMargins(0,0,0,0)
 		# self.sidePaneLayout.setAlignment()
 
@@ -480,6 +480,8 @@ class MainWindow(QWidget):
 		self.page1 = QWidget()
 		self.page1Layout = QGridLayout()
 
+		spacingBox0 = QWidget(self.page1)
+		spacingBox0.setLayout(self.HSpacer)
 
 		spacingBox1 = QWidget(self.page1)
 		spacingBox1.setLayout(self.VSpacer)
@@ -520,11 +522,12 @@ class MainWindow(QWidget):
 		switch4.setObjectName('switch2')
 		switch4.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
-
 		spacingBox2 = QWidget(self.page1)
 		spacingBox2.setLayout(self.VSpacer)
 
-		self.page1Layout.addWidget(spacingBox1, 0, 0, 5, 1)
+		self.page1Layout.addWidget(spacingBox0, 0, 0, 1, 3)
+
+		self.page1Layout.addWidget(spacingBox1, 1, 0, 5, 1)
 
 		self.page1Layout.addWidget(option1, 1, 1)
 		self.page1Layout.addWidget(option2, 2, 1)
@@ -536,7 +539,7 @@ class MainWindow(QWidget):
 		self.page1Layout.addWidget(switch3, 3, 2)
 		self.page1Layout.addWidget(switch4, 4, 2)
 
-		self.page1Layout.addWidget(spacingBox2, 0, 3, 5, 1)
+		self.page1Layout.addWidget(spacingBox2, 1, 3, 5, 1)
 
 		self.page1Layout.setAlignment(Qt.AlignTop)
 
@@ -550,7 +553,7 @@ class MainWindow(QWidget):
 
 		text1 = QLabel("Notification mode:", self.page1)
 		text1.setObjectName('text1')
-		text1.setStyleSheet('font-family: "Open Sans";')
+		text1.setStyleSheet('font-family: "Open Sans"; font-weight:bold;')
 
 		self.b1 = QRadioButton("App Popups")
 		self.b1.setChecked(True)
@@ -574,6 +577,7 @@ class MainWindow(QWidget):
 		self.page2Layout.addWidget(text1)
 		self.page2Layout.addWidget(self.b1)
 		self.page2Layout.addWidget(self.b2)
+		self.page2Layout.addSpacing(20)
 		self.page2Layout.addWidget(self.test1)
 		self.page2Layout.addWidget(self.test2)
 
@@ -584,7 +588,7 @@ class MainWindow(QWidget):
 		self.stackedLayout.addWidget(self.page2)
 
 	def testOCV(self):
-		hideMainWindow.hide()
+		self.hide()
 		testcv.startOCVTest()
 
 	def helpPage(self):
@@ -605,7 +609,7 @@ After working continuosly, our body starts to slouch, which is very harmful in t
 We use activity monitoring to track your working duration, and give a reminder popup which has the option to either take a break, show any random exercise, or just go away(for when the deadline is just 15 minutes away!)</p>""", self)
 		text1.setObjectName('text1')
 		text1.setWordWrap(True)
-		text1.setStyleSheet('font-family: "Open Sans"; ')
+		text1.setStyleSheet('font-family: "Open Sans"; font-size:15px;')
 
 		self.page3Layout.addWidget(title1)
 		self.page3Layout.addWidget(text1)
@@ -631,6 +635,7 @@ We use activity monitoring to track your working duration, and give a reminder p
 		self.page4Layout.addWidget(text1)
 		self.page4Layout.setAlignment(Qt.AlignTop)
 
+		self.page4.setStyleSheet("padding:10px;")
 		self.page4.setLayout(self.page4Layout)
 		self.stackedLayout.addWidget(self.page4)
 
@@ -778,7 +783,7 @@ class faceDistance (threading.Thread):
 						if storeData == 0:
 							storeData = w * h
 
-						if w * h > 2 * storeData: #6/5
+						if w * h > 1.5 * storeData: #6/5 or 2
 							if(winNotif):
 								windowsNotification("You are sitting too close!!", 10)
 							else:						
@@ -904,7 +909,7 @@ if __name__=="__main__":
 	window.show()
 	# MainWindow.launchBreakPopup()
 
-	icon = QIcon("../Assets/smile.ico")
+	icon = QIcon("../Assets/Symbol.ico")
   
 	# Adding item on the menu bar
 	tray = QSystemTrayIcon()
@@ -918,7 +923,8 @@ if __name__=="__main__":
 	# menu.addSection(text)
 	menu.addAction(option1)
 	menu.addSeparator()
-	menu.addAction(option2)
+	menu.addSeparator()
+	# menu.addAction(option2)
 	option1.triggered.connect(launchMainWindow)
 	
 	# To quit the app
