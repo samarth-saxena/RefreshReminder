@@ -19,6 +19,8 @@ import sys
 readytogo = False
 flag = [False, False, False, False]
 app = QApplication(sys.argv)
+screen = app.primaryScreen()
+size = screen.size()
 
 class Communicate(QObject):
 	startApp = pyqtSignal()
@@ -26,6 +28,79 @@ class Communicate(QObject):
 	createBreakPopup = pyqtSignal()
 
 c = Communicate()
+
+class postureWindow(QWidget):
+	def __init__(self, height, width):
+		super().__init__()
+
+		self.setWindowTitle("postureWindow")
+		self.setWindowFlag(Qt.FramelessWindowHint)
+		self.setWindowFlag(Qt.WindowStaysOnTopHint)
+		# ui.setWindowOpacity(0)
+		# ui.setAttribute(Qt.WA_NoSystemBackground, True)
+		self.setAttribute(Qt.WA_TranslucentBackground, True)
+		self.setStyleSheet("border : 10px solid red;")
+		self.setFixedSize(width, height)
+		self.setupUi()
+
+	def setupUi(self):
+		self.setObjectName("postureWindow")
+		self.framelayout = QHBoxLayout()
+		# self.okButton = QPushButton(self.centralwidget)
+		# self.okButton.setGeometry(QtCore.QRect(380, 330, 231, 111))
+		# self.okButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		# self.okButton.setFlat(False)
+		# self.okButton.setObjectName("okButton")
+		# self.okButton.setStyleSheet("border: 5px solid black")
+
+		self.exitButton = QPushButton("  X  ", self)
+		self.exitButton.setObjectName("exitButton")
+		self.exitButton.setStyleSheet(
+			"border: 5px solid red; background-color: red;")
+		self.exitButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		self.exitButton.clicked.connect(self.closeWin)
+
+		# self.titleLabel = QLabel(self.centralwidget)
+		# self.titleLabel.setGeometry(QtCore.QRect(170, 120, 371, 141))
+		# self.titleLabel.setObjectName("titleLabel")
+
+		font = QtGui.QFont()
+		font.setFamily("Quicksand")
+		font.setBold(True)
+		font.setWeight(80)
+		font.setPointSize(48)
+		# self.titleLabel.setFont(font)
+
+		# font.setPointSize(20)
+		# self.okButton.setFont(font)
+
+		font.setPointSize(14)
+		self.exitButton.setFont(font)
+
+		# self.okButton.setText("Okay")
+		# self.exitButton.setText()
+		# self.titleLabel.setText("Sitting too close!!")
+
+
+	def closeWin(self):
+		self.hide()
+		c.exitApp.emit() #TODO Remove this line
+
+
+
+# def createPostureWin():
+# 	app = QtWidgets.QApplication(sys.argv)
+# 	screen = app.primaryScreen()
+# 	print('Screen: %s' % screen.name())
+# 	size = screen.size()
+# 	print('Size: %d x %d' % (size.width(), size.height()))
+# 	rect = screen.availableGeometry()
+# 	print('Available: %d x %d' % (rect.width(), rect.height()))
+
+# 	ui = postureWindow(size.height(), size.width())
+
+# 	ui.show()
+# 	app.exec_()
 
 
 class breakPopup(QWidget):
@@ -76,6 +151,8 @@ class breakPopup(QWidget):
 
 class MainWindow(QWidget):
 	popup = breakPopup()
+	frame = postureWindow(size.height(), size.width())
+
 	def __init__(self):
 		super().__init__()
 
@@ -95,7 +172,7 @@ class MainWindow(QWidget):
 				padding: 0px;
 				text-align: center;
 				background-color: #6fb98f;
-				border:1px;
+				border: 1 px;
 			}
 
 
@@ -406,10 +483,14 @@ class MainWindow(QWidget):
 		# c.createBreakPopup.emit()
 		self.hide()
 		# self.close()
-	
+
 	@classmethod
 	def launchBreakPopup(cls):
 		MainWindow.popup.show()
+
+	@classmethod
+	def launchPostureFrame(cls):
+		MainWindow.frame.show()
 
 	def initiateExitApp(self):
 		c.exitApp.emit()
@@ -469,7 +550,7 @@ class faceDistance (threading.Thread):
 
 			ratio = hor_line_lenght / ver_line_lenght
 			return ratio
-			
+
 		while (flag[0]):
 			_, frame = inp.read()
 
@@ -503,7 +584,7 @@ class faceDistance (threading.Thread):
 				RightEye_ratio = get_BlinkRatio([42, 43, 44, 45, 46, 47], landmarks)
 
 				# use BlinkRatio for Results
-				BlinkRatio = (LeftEye_ratio + RightEye_ratio) / 2 
+				BlinkRatio = (LeftEye_ratio + RightEye_ratio) / 2
 
 				if BlinkRatio > 3.7:
 					# means Eye is closed
@@ -579,7 +660,7 @@ def shutdownApp():
 		TFaceDistance.join()
 	if(TScreenUsage.is_alive()):
 		TScreenUsage.join()
-	
+
 	sys.exit(0)
 
 if __name__=="__main__":
@@ -590,8 +671,8 @@ if __name__=="__main__":
 
 	window = MainWindow()
 
-	window.show()
-
+	# window.show()
+	MainWindow.launchPostureFrame()
 	TFaceDistance = faceDistance(1, "Thread-1", 1)
 	TScreenUsage = screenUsage(2, "Thread-2", 2)
 
