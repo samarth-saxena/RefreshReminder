@@ -12,7 +12,7 @@ import threading
 # import main
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QFile, Qt, pyqtSignal, QObject
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
 import sys
 
