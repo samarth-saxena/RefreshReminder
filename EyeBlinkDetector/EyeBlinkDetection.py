@@ -27,10 +27,12 @@ def get_BlinkRatio(eye_points, facial_landmarks):
     ratio = hor_line_lenght / ver_line_lenght
     return ratio
 
+count=0
+TimeBetweenEyeBlink = 10
 while True:
-    _, eyeFrame = cap.read()
-    eyeFrame = cv2.flip(eyeFrame,1)
-    gray = cv2.cvtColor(eyeFrame, cv2.COLOR_BGR2GRAY)
+    _, frame = cap.read()
+    frame = cv2.flip(frame,1)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     faces = detector(gray)
     for face in faces:
@@ -41,13 +43,21 @@ while True:
 
         # use BlinkRatio for Results
         BlinkRatio = (LeftEye_ratio + RightEye_ratio) / 2 
-
-        if BlinkRatio > 3.7:
+        count+=1
+        
+        if BlinkRatio > 4.7:
             # means Eye is closed
-            cv2.putText(eyeFrame, "BLINKING", (75, 150), font, 6, (0, 255, 255)) #remove after integration with UI
+            count=0
+            # print("count reset")
+        # if(count%10==0):
+        #     print(count)    
+        if count > (TimeBetweenEyeBlink * 20):
+            cv2.putText(frame, "BLINK !!!", (75, 150), font, 3, (0, 255, 0)) #remove after integration with UI
 
 
-    cv2.imshow("eyeFrame", eyeFrame)
+
+
+    cv2.imshow("Frame", frame)
 
     # Esc key for Exit
     key = cv2.waitKey(1)
