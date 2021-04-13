@@ -1,11 +1,17 @@
 import threading
 import main
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QFile, Qt
+from PyQt5.QtCore import QFile, Qt, pyqtSignal, QObject
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
 import sys
 
+readytogo = False
+flag = [False, False, False, False]
+
+class Communicate(QObject):
+	exitApp = pyqtSignal()
+	createBreakPopup = pyqtSignal()
 
 class MainWindow(QWidget):
 	def __init__(self):
@@ -16,7 +22,9 @@ class MainWindow(QWidget):
 		self.setMinimumSize(800, 400)
 		self.setWindowFlag(Qt.FramelessWindowHint)
 
+		self.setupUI()
 
+	def setupUI(self):
 		#Main Stylesheet
 		mainCSS = ("""
 			QWidget#mainWidget {
@@ -118,7 +126,7 @@ class MainWindow(QWidget):
 		self.exitButton = QPushButton("Exit", self)
 		self.exitButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.exitButton.setObjectName("exitButton")
-		self.exitButton.clicked.connect(self.exitApp)
+		self.exitButton.clicked.connect(self.initiateExitApp)
 
 		self.hideButton = QPushButton("Hide", self)
 		self.hideButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
@@ -317,22 +325,17 @@ class MainWindow(QWidget):
 			flag[n-1] = False
 			print(n, "False")
 
-
-	def exitApp(self):
-		sys.exit(0)
-
 	def hideApp(self):
 		global readytogo
 		readytogo = True
 		self.close()
 		# self.hide(self)
+	
+	def initiateExitApp(self):
+		c.exitApp.emit()
 
 	def showApp(self):
 		self.show(self)
-
-readytogo = False
-flag = [False, False, False, False]
-
 
 class breakPopup(QWidget):
 	def __init__(self):
@@ -378,10 +381,8 @@ class breakPopup(QWidget):
 		self.close()
 		launchMainWindow()
 
-
 def launchMainWindow():
 	# app = QApplication(sys.argv)
-	window = MainWindow()
 	window.show()
 
 	# sys.exit(app.exec_())
@@ -394,8 +395,36 @@ def launchBreakPopup():
 	
 	# app.exec_()
 
+def shutdownApp():
+	if(TFaceDistance.is_alive()):
+		TFaceDistance.join()
+	if(TScreenUsage.is_alive()):
+		TScreenUsage.join()
+	
+	sys.exit(0)
 
 
+if __name__=="__main__":
+	app = QApplication(sys.argv)
+
+	c = Communicate()
+	c.exitApp.connect(shutdownApp)
+
+	window = MainWindow()
+	window.show()
+
+	TFaceDistance = main.faceDistance(1, "Thread-1", 1)
+	TScreenUsage = main.screenUsage(2, "Thread-2", 2)
+
+	if(readytogo):
+		if(flag[0]):
+			TFaceDistance.start()
+		if(flag[3]):
+			TScreenUsage.start()
+
+	# popup = breakPopup()
+	# popup.show()
+	app.exec_()
 
 
 

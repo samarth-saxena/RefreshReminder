@@ -115,7 +115,6 @@ class screenUsage(threading.Thread):
 		self.threadID = threadID
 		self.name = name
 		self.counter = counter
-		print("Thread started")
 
 	def run(self):
 		try:
@@ -127,8 +126,8 @@ class screenUsage(threading.Thread):
 			# print("Point 3")
 			# app.exec_()
 			# print("Point 4")
-			global temp
-			temp = True
+			# global temp
+			# temp = True
 
 			# work = 0
 			# while gui.flag[3]:
@@ -151,6 +150,16 @@ class screenUsage(threading.Thread):
 			sys.exit()
 
 temp = False
+
+# class guiThread(threading.Thread):
+# 	def __init__(self, threadID, name, counter):
+# 		threading.Thread.__init__(self)
+# 		self.threadID = threadID
+# 		self.name = name
+# 		self.counter = counter
+	
+# 	def run(self):
+
 
 if __name__=="__main__":
 	app = QApplication(sys.argv)
