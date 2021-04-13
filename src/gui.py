@@ -9,11 +9,13 @@ import dlib
 from math import hypot
 
 import threading
+import testcv
+import GestureRecognition
 import exercise
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QFile, Qt, pyqtSignal, QObject
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QAction, QApplication, QDialog, QDialogButtonBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QMenu, QPushButton, QRadioButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAction, QApplication, QDialog, QDialogButtonBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QMenu, QPushButton, QRadioButton, QScrollBar, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
 import sys
 
 readytogo = False
@@ -31,6 +33,7 @@ class Communicate(QObject):
 	startApp = pyqtSignal()
 	exitApp = pyqtSignal()
 	createBreakPopup = pyqtSignal()
+	hideBreakPopup = pyqtSignal()
 	createPostureFrame = pyqtSignal()
 
 
@@ -197,7 +200,7 @@ class breakPopup(QWidget):
 
 			QPushButton#okButton, #settingsButton, #skipButton {
 				padding: 10px 20px;
-				background-color: ;
+				background-color: brown;
 				min-width: 100px;
 				height: 30px;
 				font-weight: bold;
@@ -272,7 +275,7 @@ class MainWindow(QWidget):
 
 		#Window Setup
 		self.setWindowTitle("Refresh Reminder - Main Window")
-		self.setMinimumSize(800, 450)
+		self.setMinimumSize(1100, 500)
 		self.setWindowFlag(Qt.FramelessWindowHint)
 
 		self.setupUI()
@@ -547,6 +550,7 @@ class MainWindow(QWidget):
 
 		text1 = QLabel("Notification mode:", self.page1)
 		text1.setObjectName('text1')
+		text1.setStyleSheet('font-family: "Open Sans";')
 
 		self.b1 = QRadioButton("App Popups")
 		self.b1.setChecked(True)
@@ -557,14 +561,31 @@ class MainWindow(QWidget):
 		self.b2.toggled.connect(lambda:self.buttonstate(self.b2))
 		self.b2.setObjectName("win")
 
+		self.test1 = QPushButton("Test Computer Vision", self.page1)
+		self.test1.clicked.connect(self.testOCV)
+		self.test1.setObjectName('test1')
+		self.test1.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+
+		self.test2 = QPushButton("Test Gestures", self.page1)
+		self.test2.clicked.connect(GestureRecognition.gestures)
+		self.test2.setObjectName('test2')
+		self.test2.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
 		self.page2Layout.addWidget(text1)
 		self.page2Layout.addWidget(self.b1)
 		self.page2Layout.addWidget(self.b2)
+		self.page2Layout.addWidget(self.test1)
+		self.page2Layout.addWidget(self.test2)
+
 		self.page2Layout.setAlignment(Qt.AlignTop)
 
+		self.page2.setStyleSheet("padding:10px;")
 		self.page2.setLayout(self.page2Layout)
 		self.stackedLayout.addWidget(self.page2)
+
+	def testOCV(self):
+		hideMainWindow.hide()
+		testcv.startOCVTest()
 
 	def helpPage(self):
 		# Create the second page
@@ -574,23 +595,23 @@ class MainWindow(QWidget):
 		title1 = QLabel("<h1>Help Section</h1>", self)
 		title1.setObjectName('title1')
 
-		text1 = QLabel("""<p><h4><b>Face-to-screen Distance</b>
+		text1 = QLabel("""<p><h3><b>Face-to-screen Distance</h3></b>
 The application sets a baseline for the ideal distance you should be from your monitors, and then tracks your face in real time. If you sit too close to the screen, a warning pops-up and you can adjust yourself accordingly, reducing the strain on your eyes.
-<br>
-Blink Detection
+<h3>Blink Detection</h3>
 Every blink moistens the eyes, and dry eyes are painful and harmful. Healthy blinking is about 20-25 blinks per minute, but while working with screens, it goes down to 7-10 bpm. Our app warns you if this is happening with you, ensuring you and your eyes remain refreshed.
-<br>
-Exercise Animation
+<h3>Exercise Animation</h3>
 After working continuosly, our body starts to slouch, which is very harmful in the long run, so we have implemented fun and short exercises which you can do on the spot. These exercises are AI guided, and ensure that you perform them correctly.
-<br>
-Work Time Detection
-We use activity monitoring to track your working duration, and give a reminder popup which has the option to either take a break, show any random exercise, or just go away(for when the deadline is just 15 minutes away!)</h4>""", self)
+<h3>Work Time Detection</h3>
+We use activity monitoring to track your working duration, and give a reminder popup which has the option to either take a break, show any random exercise, or just go away(for when the deadline is just 15 minutes away!)</p>""", self)
 		text1.setObjectName('text1')
 		text1.setWordWrap(True)
+		text1.setStyleSheet('font-family: "Open Sans"; ')
 
 		self.page3Layout.addWidget(title1)
 		self.page3Layout.addWidget(text1)
 		self.page3Layout.setAlignment(Qt.AlignTop)
+
+		self.page3.setStyleSheet("padding:10px;")
 
 		self.page3.setLayout(self.page3Layout)
 		self.stackedLayout.addWidget(self.page3)
@@ -649,6 +670,10 @@ We use activity monitoring to track your working duration, and give a reminder p
 	@classmethod
 	def launchBreakPopup(cls):
 		MainWindow.popup.show()
+	
+	@classmethod
+	def hideBreakPopup(cls):
+		MainWindow.popup.hide()
 
 	@classmethod
 	def launchPostureFrame(cls):
@@ -674,6 +699,9 @@ We use activity monitoring to track your working duration, and give a reminder p
 
 def launchMainWindow():
 	window.show()
+
+def hideMainWindow():
+	window.hide()
 
 
 class LASTINPUTINFO(Structure):
@@ -868,6 +896,7 @@ if __name__=="__main__":
 	c.exitApp.connect(shutdownApp)
 	c.startApp.connect(startupServices)
 	c.createBreakPopup.connect(MainWindow.launchBreakPopup)
+	c.hideBreakPopup.connect(MainWindow.hideBreakPopup)
 	c.createPostureFrame.connect(MainWindow.launchPostureFrame)
 
 	window = MainWindow()
