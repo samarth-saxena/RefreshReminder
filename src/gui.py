@@ -258,7 +258,6 @@ class MainWindow(QWidget):
 		self.sidePane.setLayout(self.sidePaneLayout)
 		self.setLayout(self.mainLayout)
 
-
 	def switchPage(self, num):
 		self.stackedLayout.setCurrentIndex(num)
 
@@ -372,7 +371,18 @@ class MainWindow(QWidget):
 	def aboutPage(self):
 		self.page4 = QWidget()
 		self.page4Layout = QVBoxLayout()
-		self.page4Layout.addWidget(QLabel("About"))
+
+		title1 = QLabel("<h1>About the application</h1>", self)
+		title1.setObjectName('title1')
+
+		text1 = QLabel("<p><b>Refresh reminder</b> is a desktop application aimed towards digital well-being of heavy desktop users like students, teachers, programmers, designers etc. <br> This application has been written in Python. It uses PyQt5 for GUI and OpenCV2 for computer vision. <br><br> Created by <b> Paradigm Shifters </b>, a team of undergraduates at IIIT Delhi. Created as a project in the course <b> Design of Interactice Systems [DES205] </b> , Winter 2020.", self)
+		text1.setObjectName('text1')
+		text1.setWordWrap(True)
+
+		self.page4Layout.addWidget(title1)
+		self.page4Layout.addWidget(text1)
+		self.page4Layout.setAlignment(Qt.AlignTop)
+
 		self.page4.setLayout(self.page4Layout)
 		self.stackedLayout.addWidget(self.page4)
 
@@ -407,23 +417,9 @@ class MainWindow(QWidget):
 	def showApp(self):
 		self.show(self)
 
-
-
 def launchMainWindow():
-	# app = QApplication(sys.argv)
 	window.show()
 
-	# sys.exit(app.exec_())
-	# app.exec_()
-
-# def launchBreakPopup():
-# 	# app = QApplication(sys.argv)
-# 	print("Reached here")
-# 	popup = breakPopup()
-
-# 	popup.show()
-	
-# 	# app.exec_()
 
 class LASTINPUTINFO(Structure):
 	_fields_ = [
@@ -523,7 +519,6 @@ class faceDistance (threading.Thread):
 		inp.release()
 		cv2.destroyAllWindows()
 
-
 class screenUsage(threading.Thread):
 	def __init__(self, threadID, name, counter):
 		threading.Thread.__init__(self)
@@ -565,6 +560,9 @@ class screenUsage(threading.Thread):
 		except KeyboardInterrupt:
 			c.exitApp.emit()
 
+
+
+
 def startupServices():
 	if(flag[0] & (TFaceDistance.is_alive()==False) ):
 		TFaceDistance.start()
@@ -584,8 +582,6 @@ def shutdownApp():
 	
 	sys.exit(0)
 
-
-
 if __name__=="__main__":
 
 	c.exitApp.connect(shutdownApp)
@@ -599,15 +595,6 @@ if __name__=="__main__":
 	TFaceDistance = faceDistance(1, "Thread-1", 1)
 	TScreenUsage = screenUsage(2, "Thread-2", 2)
 
-
-	# if(readytogo):
-	# 	if(flag[0]):
-	# 		TFaceDistance.start()
-	# 	if(flag[3]):
-	# 		TScreenUsage.start()
-
-	# popup = breakPopup()
-	# popup.show()
 	app.exec_()
 
 
