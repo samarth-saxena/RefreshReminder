@@ -129,6 +129,7 @@ class screenUsage(threading.Thread):
 			# global temp
 			# temp = True
 
+			gui.c.createBreakPopup.emit()
 			# work = 0
 			# while gui.flag[3]:
 			# 	temp = get_idle_duration()
@@ -147,7 +148,7 @@ class screenUsage(threading.Thread):
 			# 		break
 
 		except KeyboardInterrupt:
-			sys.exit()
+			gui.c.exitApp.emit()
 
 temp = False
 
@@ -161,38 +162,38 @@ temp = False
 # 	def run(self):
 
 
-if __name__=="__main__":
-	app = QApplication(sys.argv)
+# if __name__=="__main__":
+# 	app = QApplication(sys.argv)
 
-	gui.launchMainWindow()
-	# popup = gui.breakPopup()
-	# gui.launchBreakPopup()
+# 	gui.launchMainWindow()
+# 	# popup = gui.breakPopup()
+# 	# gui.launchBreakPopup()
 
-	# toaster = ToastNotifier()
-	# toaster.show_toast("Refresh reminder","Take a break to refresh!",duration=10, threaded=True)
+# 	# toaster = ToastNotifier()
+# 	# toaster.show_toast("Refresh reminder","Take a break to refresh!",duration=10, threaded=True)
 
-	app.exec_()
+# 	app.exec_()
 
-	TFaceDistance = faceDistance(1, "Thread-1", 1)
-	TScreenUsage = screenUsage(2, "Thread-2", 2)
+# 	TFaceDistance = faceDistance(1, "Thread-1", 1)
+# 	TScreenUsage = screenUsage(2, "Thread-2", 2)
 
 
-	if(gui.readytogo):
-		if(gui.flag[0]):
-			TFaceDistance.start()
-		if(gui.flag[3]):
-			TScreenUsage.start()
-	try:
-		while(True):
-			if(temp):
-				temp=False
-				# popup.show()
-			if(gui.readytogo == False):
-				if(TFaceDistance.is_alive()):
-					TFaceDistance.join()
-				if(TScreenUsage.is_alive()):
-					TScreenUsage.join()
-				break
-	except KeyboardInterrupt:
-		sys.exit()
+# 	if(gui.readytogo):
+# 		if(gui.flag[0]):
+# 			TFaceDistance.start()
+# 		if(gui.flag[3]):
+# 			TScreenUsage.start()
+# 	try:
+# 		while(True):
+# 			if(temp):
+# 				temp=False
+# 				# popup.show()
+# 			if(gui.readytogo == False):
+# 				if(TFaceDistance.is_alive()):
+# 					TFaceDistance.join()
+# 				if(TScreenUsage.is_alive()):
+# 					TScreenUsage.join()
+# 				break
+# 	except KeyboardInterrupt:
+# 		sys.exit()
 
