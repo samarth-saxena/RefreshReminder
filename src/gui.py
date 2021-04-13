@@ -29,9 +29,9 @@ class Communicate(QObject):
 
 c = Communicate()
 
-class postureWindow(QWidget):
+class postureWindow(QMainWindow):
 	def __init__(self, height, width):
-		super().__init__()
+		super(postureWindow, self).__init__()
 
 		self.setWindowTitle("postureWindow")
 		self.setWindowFlag(Qt.FramelessWindowHint)
@@ -46,6 +46,9 @@ class postureWindow(QWidget):
 	def setupUi(self):
 		self.setObjectName("postureWindow")
 		self.framelayout = QHBoxLayout()
+		
+		self.centralWidget = QWidget(self)
+		self.centralWidget.setObjectName("centralwidget")
 		# self.okButton = QPushButton(self.centralwidget)
 		# self.okButton.setGeometry(QtCore.QRect(380, 330, 231, 111))
 		# self.okButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
@@ -53,7 +56,7 @@ class postureWindow(QWidget):
 		# self.okButton.setObjectName("okButton")
 		# self.okButton.setStyleSheet("border: 5px solid black")
 
-		self.exitButton = QPushButton("  X  ", self)
+		self.exitButton = QPushButton("  X  ", self.centralWidget)
 		self.exitButton.setObjectName("exitButton")
 		self.exitButton.setStyleSheet(
 			"border: 5px solid red; background-color: red;")
@@ -76,6 +79,9 @@ class postureWindow(QWidget):
 
 		font.setPointSize(14)
 		self.exitButton.setFont(font)
+		
+		self.setCentralWidget(self.centralWidget)
+
 
 		# self.okButton.setText("Okay")
 		# self.exitButton.setText()
@@ -491,6 +497,10 @@ class MainWindow(QWidget):
 	@classmethod
 	def launchPostureFrame(cls):
 		MainWindow.frame.show()
+	
+	@classmethod
+	def hidePostureFrame(cls):
+		MainWindow.frame.hide()
 
 	def initiateExitApp(self):
 		c.exitApp.emit()
@@ -570,11 +580,12 @@ class faceDistance (threading.Thread):
 
 					if w * h > 2 * storeData: #6/5
 						# win.showWin()
-						# windows.createPostureWin()
-						cv2.putText(frame, 'Too Close!', (x - 3, y - 3), font, 1, (255, 255, 255), 2)
-						cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-					# else:
+						MainWindow.launchPostureFrame()
+						# cv2.putText(frame, 'Too Close!', (x - 3, y - 3), font, 1, (255, 255, 255), 2)
+						# cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+					else:
 					# 	win.closeWin()
+						MainWindow.hidePostureFrame()
 					# 	cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
 			for face in faces:
@@ -671,8 +682,8 @@ if __name__=="__main__":
 
 	window = MainWindow()
 
-	# window.show()
-	MainWindow.launchPostureFrame()
+	window.show()
+
 	TFaceDistance = faceDistance(1, "Thread-1", 1)
 	TScreenUsage = screenUsage(2, "Thread-2", 2)
 

@@ -1,51 +1,99 @@
 import sys
 
-from PyQt5.QtWidgets import (
-    QApplication,
-    QComboBox,
-    QFormLayout,
-    QLineEdit,
-    QStackedLayout,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QFile, Qt, pyqtSignal, QObject
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
 
-class Window(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("QStackedLayout Example")
-        # Create a top-level layout
-        layout = QVBoxLayout()
-        self.setLayout(layout)
-        # Create and connect the combo box to switch between pages
-        self.pageCombo = QComboBox()
-        self.pageCombo.addItems(["Page 1", "Page 2"])
-        self.pageCombo.activated.connect(self.switchPage)
-        # Create the stacked layout
-        self.stackedLayout = QStackedLayout()
-        # Create the first page
-        self.page1 = QWidget()
-        self.page1Layout = QFormLayout()
-        self.page1Layout.addRow("Name:", QLineEdit())
-        self.page1Layout.addRow("Address:", QLineEdit())
-        self.page1.setLayout(self.page1Layout)
-        self.stackedLayout.addWidget(self.page1)
-        # Create the second page
-        self.page2 = QWidget()
-        self.page2Layout = QFormLayout()
-        self.page2Layout.addRow("Job:", QLineEdit())
-        self.page2Layout.addRow("Department:", QLineEdit())
-        self.page2.setLayout(self.page2Layout)
-        self.stackedLayout.addWidget(self.page2)
-        # Add the combo box and the stacked layout to the top-level layout
-        layout.addWidget(self.pageCombo)
-        layout.addLayout(self.stackedLayout)
+class postureWindow(QMainWindow):
+    def __init__(self, height, width):
+        super(postureWindow, self).__init__()
+        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setWindowFlag(Qt.WindowStaysOnTopHint)
+        # ui.setWindowOpacity(0)
+        # ui.setAttribute(Qt.WA_NoSystemBackground, True)
+        self.setAttribute(Qt.WA_TranslucentBackground, True)
+        self.setGeometry(0, 0, width, height)
+        self.setupUi()
 
-    def switchPage(self):
-        self.stackedLayout.setCurrentIndex(self.pageCombo.currentIndex())
+    def setupUi(self):
+        self.setStyleSheet("border: 10px solid red;")
+        self.setObjectName("postureWindow")
+        self.setEnabled(True)
+        self.setCursor(QtGui.QCursor(Qt.ArrowCursor))
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = Window()
-    window.show()
-    sys.exit(app.exec_())
+        self.centralwidget = QWidget(self)
+        self.centralwidget.setObjectName("centralwidget")
+
+        # self.okButton = QPushButton(self.centralwidget)
+        # self.okButton.setGeometry(QtCore.QRect(380, 330, 231, 111))
+        # self.okButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+        # self.okButton.setFlat(False)
+        # self.okButton.setObjectName("okButton")
+        # self.okButton.setStyleSheet("border: 5px solid black")
+
+        self.exitButton = QPushButton(self.centralwidget)
+        self.exitButton.setObjectName("exitButton")
+        self.exitButton.setStyleSheet(
+            "border: 5px solid red; background-color: red;")
+        self.exitButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+
+        # self.titleLabel = QLabel(self.centralwidget)
+        # self.titleLabel.setGeometry(QtCore.QRect(170, 120, 371, 141))
+        # self.titleLabel.setObjectName("titleLabel")
+
+        font = QtGui.QFont()
+        font.setFamily("Quicksand")
+        font.setBold(True)
+        font.setWeight(80)
+        font.setPointSize(48)
+        # self.titleLabel.setFont(font)
+
+        # font.setPointSize(20)
+        # self.okButton.setFont(font)
+
+        font.setPointSize(14)
+        self.exitButton.setFont(font)
+
+        self.setCentralWidget(self.centralwidget)
+        self.retranslateUi()
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    def retranslateUi(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle("postureWindow")
+        # self.okButton.setText("Okay")
+        self.exitButton.setText("  X  ")
+        # self.titleLabel.setText("Sitting too close!!")
+        self.update()
+        # self.okButton.clicked.connect(self.closeWin)
+        self.exitButton.clicked.connect(self.closeWin)
+
+    # def update(self):
+    # 	self.titleLabel.adjustSize()
+
+    def closeWin(self):
+        self.close()
+
+    def exitWin(self):
+        sys.exit()
+
+    def showWin(self):
+        self.setWindowOpacity(100)
+
+
+def createPostureWin():
+    app = QtWidgets.QApplication(sys.argv)
+    screen = app.primaryScreen()
+    print('Screen: %s' % screen.name())
+    size = screen.size()
+    print('Size: %d x %d' % (size.width(), size.height()))
+    rect = screen.availableGeometry()
+    print('Available: %d x %d' % (rect.width(), rect.height()))
+
+    ui = postureWindow(size.height(), size.width())
+
+    ui.show()
+    app.exec_()
+
+createPostureWin()
