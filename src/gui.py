@@ -13,11 +13,13 @@ import threading
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QFile, Qt, pyqtSignal, QObject
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QRadioButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
 import sys
 
 readytogo = False
 flag = [False, False, False, False]
+winNotif = False
+
 app = QApplication(sys.argv)
 screen = app.primaryScreen()
 size = screen.size()
@@ -26,6 +28,8 @@ class Communicate(QObject):
 	startApp = pyqtSignal()
 	exitApp = pyqtSignal()
 	createBreakPopup = pyqtSignal()
+	createPostureFrame = pyqtSignal()
+
 
 c = Communicate()
 
@@ -107,6 +111,7 @@ class postureWindow(QMainWindow):
 
 # 	ui.show()
 # 	app.exec_()
+
 
 
 class breakPopup(QWidget):
@@ -282,8 +287,8 @@ class MainWindow(QWidget):
 		self.homeButton = QPushButton("Home", self)
 		self.homeButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.homeButton.setObjectName("homeButton")
-		# self.homeButton.setIcon(QIcon('home.png'))
-		# self.homeButton.setIconSize(QtCore.QSize(130,130))
+		# self.homeButton.setIcon(QIcon('smile.ico'))
+		# self.homeButton.setIconSize(QtCore.QSize(10,10))
 		self.homeButton.clicked.connect(lambda: self.switchPage(0))
 
 		self.settingsButton = QPushButton("Settings", self)
@@ -416,18 +421,23 @@ class MainWindow(QWidget):
 		self.page2 = QWidget()
 		self.page2Layout = QVBoxLayout()
 
-		# option1 = QLabel("Notification mode:", self.page1)
-		# option1.setObjectName('option1')
+		text1 = QLabel("Notification mode:", self.page1)
+		text1.setObjectName('text1')
 
-		# switch1 = QPushButton("On", self.page1)
-		# switch1.setCheckable(True)
-		# switch1.clicked.connect(lambda: self.changeColor(switch1))
-		# switch1.setObjectName('switch1')
-		# switch1.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		self.b1 = QRadioButton("App Popups")
+		self.b1.setChecked(True)
+		self.b1.toggled.connect(lambda:self.buttonstate(self.b1))
+		self.b1.setObjectName("app")
+			
+		self.b2 = QRadioButton("Windows Notification")
+		self.b2.toggled.connect(lambda:self.buttonstate(self.b2))
+		self.b2.setObjectName("win")
 
-		# self.page2Layout.addWidget(title1)
-		# self.page2Layout.addWidget(text1)
-		# self.page2Layout.setAlignment(Qt.AlignTop)
+
+		self.page2Layout.addWidget(text1)
+		self.page2Layout.addWidget(self.b1)
+		self.page2Layout.addWidget(self.b2)
+		self.page2Layout.setAlignment(Qt.AlignTop)
 
 		self.page2.setLayout(self.page2Layout)
 		self.stackedLayout.addWidget(self.page2)
@@ -481,6 +491,18 @@ class MainWindow(QWidget):
 			flag[n-1] = False
 			print(n, "False")
 
+	def buttonstate(self,b):
+		global winNotif
+		if b.objectName() == "app":
+			if b.isChecked() == True:
+				winNotif = False
+				
+		if b.objectName() == "win":
+			if b.isChecked() == True:
+				winNotif = True
+
+		print(winNotif)
+			
 	def hideApp(self):
 		# global readytogo
 		# readytogo = True
@@ -525,6 +547,11 @@ def get_idle_duration():
 	millis = windll.kernel32.GetTickCount() - lastInputInfo.dwTime
 	return millis / 1000.0
 
+def windowsNotification(msg, dur):
+	toaster = ToastNotifier()
+	toaster.show_toast("Refresh reminder", msg, duration=dur, threaded=True)
+
+
 class faceDistance (threading.Thread):
 
 	def __init__(self, threadID, name, counter):
@@ -535,6 +562,7 @@ class faceDistance (threading.Thread):
 
 	def run(self):
 		print("Face thread started")
+		global winNotif
 
 		getFace = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
 
@@ -575,17 +603,18 @@ class faceDistance (threading.Thread):
 					if storeData == 0:
 						storeData = w * h
 
-					# print(w*h)
-						# win = windows.createPostureWin()
-
 					if w * h > 2 * storeData: #6/5
-						# win.showWin()
-						MainWindow.launchPostureFrame()
+						if(winNotif):
+							windowsNotification("You are sitting too close!!", 10)
+						else:						
+							MainWindow.launchPostureFrame()
+							# c.createPostureFrame.emit()
+
 						# cv2.putText(frame, 'Too Close!', (x - 3, y - 3), font, 1, (255, 255, 255), 2)
 						# cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 					else:
-					# 	win.closeWin()
-						MainWindow.hidePostureFrame()
+						if(winNotif == False):
+							MainWindow.hidePostureFrame()
 					# 	cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
 			for face in faces:
@@ -621,16 +650,7 @@ class screenUsage(threading.Thread):
 	def run(self):
 		try:
 			print("Screen thread started")
-			# MainWindow.launchBreakPopup()
-			# popup = gui.breakPopup()
-			# print("Point 2")
-			# popup.show()
-			# print("Point 3")
-			# app.exec_()
-			# print("Point 4")
-			# global temp
-			# temp = True
-
+			global winNotif
 
 			work = 0
 			while flag[3]:
@@ -643,8 +663,10 @@ class screenUsage(threading.Thread):
 				print(work)
 				print()
 				if(work>10):
-					# windows.createRefreshWin()
-					c.createBreakPopup.emit()
+					if(winNotif):
+						windowsNotification("Time for a short break :)", 10)
+					else:
+						c.createBreakPopup.emit()
 					work=0
 				time.sleep(1)
 
@@ -679,6 +701,7 @@ if __name__=="__main__":
 	c.exitApp.connect(shutdownApp)
 	c.startApp.connect(startupServices)
 	c.createBreakPopup.connect(MainWindow.launchBreakPopup)
+	c.createPostureFrame.connect(MainWindow.launchPostureFrame)
 
 	window = MainWindow()
 
