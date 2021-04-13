@@ -9,6 +9,8 @@ from win10toast import ToastNotifier
 import numpy as np
 import dlib
 from math import hypot
+from PyQt5.QtWidgets import QApplication
+import sys
 
 
 class LASTINPUTINFO(Structure):
@@ -113,38 +115,58 @@ class screenUsage(threading.Thread):
 		self.threadID = threadID
 		self.name = name
 		self.counter = counter
+		print("Thread started")
 
 	def run(self):
 		try:
-			work = 0
-			while gui.flag[3]:
-				temp = get_idle_duration()
-				if (temp<5):
-					work+=1
-				else:
-					work=0
-				print(temp)
-				print(work)
-				print()
-				if(work>10):
-					# windows.createRefreshWin()
-					work=0
-				time.sleep(1)
-				if (gui.readytogo == False):
-					break
+			# gui.launchBreakPopup()
+			# print("Point 1")
+			# popup = gui.breakPopup()
+			# print("Point 2")
+			# popup.show()
+			# print("Point 3")
+			# app.exec_()
+			# print("Point 4")
+			global temp
+			temp = True
+
+			# work = 0
+			# while gui.flag[3]:
+			# 	temp = get_idle_duration()
+			# 	if (temp<5):
+			# 		work+=1
+			# 	else:
+			# 		work=0
+			# 	print(temp)
+			# 	print(work)
+			# 	print()
+			# 	if(work>10):
+			# 		# windows.createRefreshWin()
+			# 		work=0
+			# 	time.sleep(1)
+			# 	if (gui.readytogo == False):
+			# 		break
 
 		except KeyboardInterrupt:
-			print('\n')
+			sys.exit()
 
+temp = False
 
 if __name__=="__main__":
-	gui.launchApp()
+	app = QApplication(sys.argv)
+
+	gui.launchMainWindow()
+	# popup = gui.breakPopup()
+	# gui.launchBreakPopup()
 
 	# toaster = ToastNotifier()
 	# toaster.show_toast("Refresh reminder","Take a break to refresh!",duration=10, threaded=True)
 
+	app.exec_()
+
 	TFaceDistance = faceDistance(1, "Thread-1", 1)
 	TScreenUsage = screenUsage(2, "Thread-2", 2)
+
 
 	if(gui.readytogo):
 		if(gui.flag[0]):
@@ -153,8 +175,15 @@ if __name__=="__main__":
 			TScreenUsage.start()
 	try:
 		while(True):
+			if(temp):
+				temp=False
+				# popup.show()
 			if(gui.readytogo == False):
-				TFaceDistance.join()
-				TScreenUsage.join()
+				if(TFaceDistance.is_alive()):
+					TFaceDistance.join()
+				if(TScreenUsage.is_alive()):
+					TScreenUsage.join()
+				break
 	except KeyboardInterrupt:
-		print('\n')
+		sys.exit()
+

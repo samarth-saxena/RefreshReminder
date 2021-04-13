@@ -1,13 +1,13 @@
 import threading
 import main
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QFile, Qt
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import QApplication, QGridLayout, QHBoxLayout, QLabel, QMainWindow, QPushButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFormLayout, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QStackedLayout, QSystemTrayIcon, QVBoxLayout, QWidget
 import sys
 
 
-class Window(QWidget):
+class MainWindow(QWidget):
 	def __init__(self):
 		super().__init__()
 
@@ -18,7 +18,7 @@ class Window(QWidget):
 
 
 		#Main Stylesheet
-		themeStylesheet = ("""
+		mainCSS = ("""
 			QWidget#mainWidget {
 				margin: 0px;
 				padding: 0px;
@@ -85,7 +85,7 @@ class Window(QWidget):
 
 		""")
 
-	
+
 		#Layouts
 		self.mainLayout = QGridLayout()
 		self.sidePaneLayout = QVBoxLayout()
@@ -131,12 +131,12 @@ class Window(QWidget):
 		# self.homeButton.setIcon(QIcon('home.png'))
 		# self.homeButton.setIconSize(QtCore.QSize(130,130))
 		self.homeButton.clicked.connect(lambda: self.switchPage(0))
-		
+
 		self.settingsButton = QPushButton("Settings", self)
 		self.settingsButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.settingsButton.setObjectName("settingsButton")
 		self.settingsButton.clicked.connect(lambda: self.switchPage(1))
-		
+
 		self.helpButton = QPushButton("Help", self)
 		self.helpButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.helpButton.setObjectName("helpButton")
@@ -164,7 +164,7 @@ class Window(QWidget):
 		# self.quitPaneLayout.setContentsMargins(0,0,0,0)
 
 
-		self.setStyleSheet(themeStylesheet)
+		self.setStyleSheet(mainCSS)
 
 		# self.titlePaneLayout.addStretch()
 		self.titlePaneLayout.addWidget(self.titleLabel, 0, Qt.AlignCenter)
@@ -194,7 +194,7 @@ class Window(QWidget):
 	def homePage(self):
 		self.page1 = QWidget()
 		self.page1Layout = QGridLayout()
-		
+
 
 		spacingBox1 = QWidget(self.page1)
 		spacingBox1.setLayout(self.VSpacer)
@@ -310,7 +310,7 @@ class Window(QWidget):
 			button.setStyleSheet("background-color : green")
 			button.setText("On")
 			flag[n-1] = True
-			print(n, "True")			
+			print(n, "True")
 		else:
 			button.setStyleSheet("background-color : red")
 			button.setText("Off")
@@ -325,34 +325,85 @@ class Window(QWidget):
 		global readytogo
 		readytogo = True
 		self.close()
+		# self.hide(self)
 
 	def showApp(self):
-		self.show()
+		self.show(self)
 
 readytogo = False
-flag = [False, False, False, False] 
+flag = [False, False, False, False]
 
 
-# if __name__ == "__main__":
-def launchApp():
-	app = QApplication(sys.argv)
-	window = Window()
+class breakPopup(QWidget):
+	def __init__(self):
+		super().__init__()
+
+		self.setWindowTitle("Refresh Reminder - Break Popup")
+		self.setMinimumSize(800, 400)
+		self.setWindowFlag(Qt.FramelessWindowHint)
+
+		popupCSS = ""
+
+		self.mainLayout = QGridLayout()
+
+		self.okButton = QPushButton("Okay", self)
+		self.okButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		self.okButton.setObjectName("okButton")
+		self.okButton.clicked.connect(self.launchExercise)
+
+		self.settingsButton = QPushButton("Go to settings", self)
+		self.settingsButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		self.settingsButton.setObjectName("settingsButton")
+		self.settingsButton.clicked.connect(self.showMainWin)
+
+		self.skipButton = QPushButton("Skip", self)
+		self.skipButton.setObjectName("skipButton")
+		self.skipButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+		self.skipButton.clicked.connect(self.close)
+
+		self.titleLabel = QLabel("Its time for a break!", self)
+		self.titleLabel.setObjectName("titleLabel")
+
+		self.mainLayout.addWidget(self.titleLabel, 0, 0, 1, 3)
+		self.mainLayout.addWidget(self.settingsButton, 1, 0)
+		self.mainLayout.addWidget(self.skipButton, 1, 1)
+		self.mainLayout.addWidget(self.okButton, 1, 2)
+
+		self.setLayout(self.mainLayout)
+
+	def launchExercise(self):
+		print("Exercise")
+
+	def showMainWin(self):
+		self.close()
+		launchMainWindow()
+
+
+def launchMainWindow():
+	# app = QApplication(sys.argv)
+	window = MainWindow()
 	window.show()
 
-	icon = QIcon("home.png")
-	tray = QSystemTrayIcon()
-	tray.setIcon(icon)
-	tray.setVisible(True)
-	# thread1 = main.faceDistance(1, "Thread-1", 1)
-	# thread2 = main.screenUsage(2, "Thread-2", 2)
+	# sys.exit(app.exec_())
+	# app.exec_()
 
-	# if(readytogo):
-	# 	if(flag[0]):
-	# 		thread1.start()
-	# 	if(flag[1]):
-	# 		thread2.start()
+def launchBreakPopup():
+	# app = QApplication(sys.argv)
+	popup = breakPopup()
+	popup.show()
+	
+	# app.exec_()
 
-	app.exec_()
+
+
+
+
+
+
+
+
+
+
 
 # class mainWindow(QMainWindow):
 #     def __init__(self):
