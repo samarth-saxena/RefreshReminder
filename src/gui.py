@@ -50,7 +50,7 @@ class postureWindow(QMainWindow):
 		# ui.setWindowOpacity(0)
 		# ui.setAttribute(Qt.WA_NoSystemBackground, True)
 		self.setAttribute(Qt.WA_TranslucentBackground, True)
-		self.setStyleSheet("border : 10px solid red;")
+		self.setStyleSheet("border : 10px solid #D62839;")
 		self.setFixedSize(width, height)
 		self.setupUi()
 
@@ -70,7 +70,7 @@ class postureWindow(QMainWindow):
 		self.exitButton = QPushButton("  X  ", self.centralWidget)
 		self.exitButton.setObjectName("exitButton")
 		self.exitButton.setStyleSheet(
-			"border: 5px solid red; background-color: red;")
+			"border: 5px solid #D62839; background-color: #D62839;")
 		self.exitButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.exitButton.clicked.connect(self.closeWin)
 
@@ -276,7 +276,7 @@ class MainWindow(QWidget):
 
 		#Window Setup
 		self.setWindowTitle("Refresh Reminder - Main Window")
-		self.setMinimumSize(1100, 450)
+		self.setMinimumSize(1000, 400)
 		self.setWindowFlag(Qt.FramelessWindowHint)
 
 		self.setupUI()
@@ -289,44 +289,48 @@ class MainWindow(QWidget):
 				margin: 0px;
 				padding: 0px;
 				text-align: center;
-				background-color: #6fb98f;
+				background-color: #FFFFFF;
 				border: 1 px;
 			}
-
 
 			QWidget#sidePane {
 				margin: 0px;
 				padding: 0px;
-				background-color: #2c7873;
+				background-color: #2D3239;
 				border:0px;
-
-			}
-
-			QWidget#quitPane {
-				margin: 0px;
-				padding: 0px;
-				border:0px;
-				background-color: #2c7873;
+				max-width: 250px;
 			}
 
 			QWidget#titlePane {
 				margin: 0px;
 				border:0px;
 			}
+			QWidget#topBar {
+				margin: 0px;
+				border:0px;
+				background-color: #36BFB6;
+			}
 
 			QLabel#titleLabel {
 				font-family: Quicksand;
-				font-size: 60px;
+				font-size: 35px;
 				font-weight: bold;
-				padding: 20px 10px;
+				padding: 40px 35px;
+				color: white;
+			}
+
+			QLabel#pageTitle {
+				font-family: Quicksand;
+				font-size: 50px;
+				font-weight: bold;
+				padding: 10px 20px;
 
 			}
 
 			QPushButton {
 				margin: 0px;
 				padding: 20px 50px;
-				background-color: #2c7873;
-				color: white;
+				color: white ;
 				border: none;
 				font-family: "Open Sans";
 				font-size: 20px;
@@ -334,16 +338,27 @@ class MainWindow(QWidget):
 			}
 
 			QPushButton#exitButton, #hideButton {
-				background-color: #2c6666;
+				padding: 20px 30px;
+				min-width: 80px;
+				background-color: #36BFB6;
+				font-weight: bold;
 			}
 
 			QPushButton#exitButton::hover, #hideButton::hover{
-				background-color: #004445;
+				background-color: #2D3239;
+			}
+
+			QPushButton#test1, #test2 {
+				background-color: #36BFB6;
+			}
+
+			QPushButton#test1::hover, #test2::hover {
+				background-color: #2D3239;
 			}
 
 			QPushButton#switch1, #switch2, #switch3, #switch4 {
 				padding: 10px 20px;
-				background-color:red;
+				background-color:#FF6B6B;
 				max-width: 50px;
 				height: 30px;
 				font-weight: bold;
@@ -355,8 +370,10 @@ class MainWindow(QWidget):
 			}
 
 			QPushButton::hover {
-				background-color: #004445;
+				background-color: #36BFB6;
 			}
+
+
 
 		""")
 
@@ -366,7 +383,7 @@ class MainWindow(QWidget):
 		self.sidePaneLayout = QVBoxLayout()
 		self.titlePaneLayout = QHBoxLayout()
 		self.stackedLayout = QStackedLayout()
-		# self.quitPaneLayout = QVBoxLayout()
+		self.quitPaneLayout = QHBoxLayout()
 		self.VSpacer = QVBoxLayout()
 		self.VSpacer.addStretch(1)
 		self.HSpacer = QHBoxLayout()
@@ -378,12 +395,18 @@ class MainWindow(QWidget):
 		self.sidePane.setObjectName("sidePane")
 		self.titlePane = QWidget(self)
 		self.titlePane.setObjectName("titlePane")
-		# self.quitPane = QWidget(self)
-		# self.quitPane.setObjectName("quitPane")
+		self.quitPane = QWidget(self)
+		self.quitPane.setObjectName("quitPane")
+		self.topBar = QWidget(self)		
+		self.topBar.setObjectName("topBar")
+
 
 		self.titleLabel = QLabel("Refresh Reminder", self)
-		# self.titleLabel.setGeometry(QtCore.QRect(100, 100, 371, 141))
 		self.titleLabel.setObjectName("titleLabel")
+		self.titleLabel.setWordWrap(True)
+
+		self.pageTitle = QLabel("Home", self)
+		self.pageTitle.setObjectName("pageTitle")
 
 		self.homePage()
 		self.settingsPage()
@@ -434,15 +457,17 @@ class MainWindow(QWidget):
 		self.aboutButton.clicked.connect(lambda: self.switchPage(3))
 		# self.aboutButton.clicked.connect(hideWindow)
 
-		self.sidePaneLayout.addStretch(1)
-		self.sidePaneLayout.addWidget(self.exitButton, 0, Qt.AlignTop)
-		self.sidePaneLayout.addWidget(self.hideButton, 0, Qt.AlignTop)
-		self.sidePaneLayout.addStretch(1)
+		self.sidePaneLayout.addSpacing(2)
+		self.sidePaneLayout.addWidget(self.titleLabel, 0, Qt.AlignTop)
+		self.sidePaneLayout.addSpacing(5)
 		self.sidePaneLayout.addWidget(self.homeButton, 0, Qt.AlignTop)
 		self.sidePaneLayout.addWidget(self.settingsButton, 0, Qt.AlignTop)
 		self.sidePaneLayout.addWidget(self.helpButton, 0, Qt.AlignTop)
 		self.sidePaneLayout.addWidget(self.aboutButton, 0, Qt.AlignTop)
 		self.sidePaneLayout.addStretch(2)
+		# self.sidePaneLayout.addWidget(self.hideButton, 0, Qt.AlignTop)
+		# self.sidePaneLayout.addWidget(self.exitButton, 0, Qt.AlignTop)
+		# self.sidePaneLayout.addStretch(1)
 		self.sidePaneLayout.setContentsMargins(0,0,0,0)
 		# self.sidePaneLayout.setAlignment()
 
@@ -453,17 +478,26 @@ class MainWindow(QWidget):
 
 		self.setStyleSheet(mainCSS)
 
-		# self.titlePaneLayout.addStretch()
-		self.titlePaneLayout.addWidget(self.titleLabel, 0, Qt.AlignCenter)
+		self.topBarLayout = QHBoxLayout()
+		self.topBarLayout.addSpacing(15)
+		self.topBar.setLayout(self.topBarLayout)
+
+		self.quitPaneLayout.addWidget(self.hideButton, 0, Qt.AlignTop)
+		self.quitPaneLayout.addWidget(self.exitButton, 0, Qt.AlignTop)
+		self.quitPane.setLayout(self.quitPaneLayout)
+
+		self.titlePaneLayout.addWidget(self.pageTitle, 0, Qt.AlignTop)
+		self.titlePaneLayout.addStretch(2)
+		self.titlePaneLayout.addWidget(self.quitPane, 0, Qt.AlignTop)
 		self.titlePaneLayout.setContentsMargins(0,0,0,0)
 		# self.titlePaneLayout.addStretch(40)
 		# self.titlePaneLayout.setAlignment(self.titleLabel, Qt.AlignCenter)
 
 
-		# self.mainLayout.addWidget(self.quitPane, 0, 0)
-		self.mainLayout.addWidget(self.titlePane, 0, 1)
-		self.mainLayout.addWidget(self.sidePane, 0, 0, 2, 1)
-		self.mainLayout.addLayout(self.stackedLayout, 1, 1)
+		self.mainLayout.addWidget(self.topBar, 0, 1, 1, 2)
+		self.mainLayout.addWidget(self.titlePane, 1, 1)
+		self.mainLayout.addWidget(self.sidePane, 0, 0, 3, 1)
+		self.mainLayout.addLayout(self.stackedLayout, 2, 1)
 		self.mainLayout.setContentsMargins(0,0,0,0)
 		self.mainLayout.setSpacing(0)
 		# self.mainLayout.setSpacing(50)
@@ -476,6 +510,14 @@ class MainWindow(QWidget):
 
 	def switchPage(self, num):
 		self.stackedLayout.setCurrentIndex(num)
+		if(num==0):
+			self.pageTitle.setText("Home")
+		elif(num==1):
+			self.pageTitle.setText("Settings")
+		elif(num==2):
+			self.pageTitle.setText("Help")
+		elif(num==3):
+			self.pageTitle.setText("About")
 
 	def homePage(self):
 		self.page1 = QWidget()
@@ -554,7 +596,7 @@ class MainWindow(QWidget):
 
 		text1 = QLabel("Notification mode:", self.page1)
 		text1.setObjectName('text1')
-		text1.setStyleSheet('font-family: "Open Sans"; font-weight:bold;')
+		text1.setStyleSheet('font-family: "Open Sans"; font-weight:bold; font-size: 20px;')
 
 		self.b1 = QRadioButton("App Popups")
 		self.b1.setChecked(True)
@@ -564,6 +606,10 @@ class MainWindow(QWidget):
 		self.b2 = QRadioButton("Windows Notification")
 		self.b2.toggled.connect(lambda:self.buttonstate(self.b2))
 		self.b2.setObjectName("win")
+
+		text2 = QLabel("Other options:", self.page1)
+		text2.setObjectName('text2')
+		text2.setStyleSheet('font-family: "Open Sans"; font-weight:bold; font-size: 20px; color:black;')
 
 		self.test1 = QPushButton("Test Computer Vision", self.page1)
 		self.test1.clicked.connect(self.testOCV)
@@ -575,18 +621,27 @@ class MainWindow(QWidget):
 		self.test2.setObjectName('test2')
 		self.test2.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
+		self.box = QWidget()
+		self.hlayout = QHBoxLayout()
+		self.hlayout.addWidget(self.test1)
+		self.hlayout.addWidget(self.test2)
+		self.box.setLayout(self.hlayout)
+
 		self.page2Layout.addWidget(text1)
 		self.page2Layout.addWidget(self.b1)
 		self.page2Layout.addWidget(self.b2)
 		self.page2Layout.addSpacing(20)
-		self.page2Layout.addWidget(self.test1)
-		self.page2Layout.addWidget(self.test2)
+		self.page2Layout.addWidget(text2)
+		self.page2Layout.addWidget(self.box)
+		# self.page2Layout.addWidget(self.test2)
 
 		self.page2Layout.setAlignment(Qt.AlignTop)
 
 		self.page2.setStyleSheet("padding:10px;")
 		self.page2.setLayout(self.page2Layout)
 		self.stackedLayout.addWidget(self.page2)
+		# self.pageTitle.setText("Settings")
+
 
 	def testOCV(self):
 		self.hide()
@@ -597,8 +652,8 @@ class MainWindow(QWidget):
 		self.page3 = QWidget()
 		self.page3Layout = QVBoxLayout()
 
-		title1 = QLabel("<h1>Help Section</h1>", self)
-		title1.setObjectName('title1')
+		# title1 = QLabel("<h1>Help Section</h1>", self)
+		# title1.setObjectName('title1')
 
 		text1 = QLabel("""<p><h3><b>Face-to-screen Distance</h3></b>
 The application sets a baseline for the ideal distance you should be from your monitors, and then tracks your face in real time. If you sit too close to the screen, a warning pops-up and you can adjust yourself accordingly, reducing the strain on your eyes.
@@ -612,7 +667,7 @@ We use activity monitoring to track your working duration, and give a reminder p
 		text1.setWordWrap(True)
 		text1.setStyleSheet('font-family: "Open Sans"; font-size:15px;')
 
-		self.page3Layout.addWidget(title1)
+		# self.page3Layout.addWidget(title1)
 		self.page3Layout.addWidget(text1)
 		self.page3Layout.setAlignment(Qt.AlignTop)
 
@@ -620,34 +675,39 @@ We use activity monitoring to track your working duration, and give a reminder p
 
 		self.page3.setLayout(self.page3Layout)
 		self.stackedLayout.addWidget(self.page3)
+		# self.pageTitle.setText("Help")
+
 
 	def aboutPage(self):
 		self.page4 = QWidget()
 		self.page4Layout = QVBoxLayout()
 
-		title1 = QLabel("<h1>About the application</h1>", self)
-		title1.setObjectName('title1')
+		# title1 = QLabel("<h1>About the application</h1>", self)
+		# title1.setObjectName('title1')
 
 		text1 = QLabel("<p><b>Refresh reminder</b> is a desktop application aimed towards digital well-being of heavy desktop users like students, teachers, programmers, designers etc. <br> This application has been written in Python. It uses PyQt5 for GUI and OpenCV2 for computer vision. <br><br> Created by <b> Paradigm Shifters </b>, a team of undergraduates at IIIT Delhi. Created as a project in the course <b> Design of Interactice Systems [DES205] </b> , Winter 2020.", self)
 		text1.setObjectName('text1')
 		text1.setWordWrap(True)
+		text1.setStyleSheet('font-family: "Open Sans"; font-size:15px;')
 
-		self.page4Layout.addWidget(title1)
+		# self.page4Layout.addWidget(title1)
 		self.page4Layout.addWidget(text1)
 		self.page4Layout.setAlignment(Qt.AlignTop)
 
 		self.page4.setStyleSheet("padding:10px;")
 		self.page4.setLayout(self.page4Layout)
 		self.stackedLayout.addWidget(self.page4)
+		# self.pageTitle.setText("About")
+
 
 	def changeColor(self, button, n):
 		if button.isChecked():
-			button.setStyleSheet("background-color : green")
+			button.setStyleSheet("background-color : #36BFB6")
 			button.setText("On")
 			flag[n-1] = True
 			print(n, "True")
 		else:
-			button.setStyleSheet("background-color : red")
+			button.setStyleSheet("background-color : #FF6B6B")
 			button.setText("Off")
 			flag[n-1] = False
 			print(n, "False")
