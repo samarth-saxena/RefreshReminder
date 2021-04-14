@@ -1036,10 +1036,11 @@ class gestures(threading.Thread):
 			
 			k = cv2.waitKey(5) & 0xFF
 			if k == 27:
+				c.exitApp.emit()
 				break
 			
 		cv2.destroyAllWindows()
-		cap.release()  
+		cap.release()
 
 
 
@@ -1059,6 +1060,8 @@ def shutdownApp():
 		TFaceDistance.join()
 	if(TScreenUsage.is_alive()):
 		TScreenUsage.join()
+	if(TGestures.is_alive()):
+		TGestures.join()
 
 	sys.exit(0)
 
