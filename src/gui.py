@@ -569,7 +569,7 @@ class MainWindow(QWidget):
 		self.test1.setObjectName('test1')
 		self.test1.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 
-		self.test2 = QPushButton("Test Gestures", self.page1)
+		self.test2 = QPushButton("Try out Gestures", self.page1)
 		self.test2.clicked.connect(GestureRecognition.gestures)
 		self.test2.setObjectName('test2')
 		self.test2.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
