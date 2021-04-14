@@ -10,7 +10,6 @@ from math import hypot
 
 import threading
 import testcv
-import GestureRecognition
 import exercise
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QFile, Qt, pyqtSignal, QObject
@@ -228,8 +227,9 @@ class breakPopup(QWidget):
 		self.settingsButton = QPushButton("Go to settings", self)
 		self.settingsButton.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
 		self.settingsButton.setObjectName("settingsButton")
-		self.okButton.setFlat(True)
+		self.settingsButton.setFlat(True)
 		self.settingsButton.clicked.connect(self.showMainWin)
+		self.settingsButton.setStyleSheet("background-color:#ffbf00; border: 3px solid brown;")
 
 		self.skipButton = QPushButton("Skip", self)
 		self.skipButton.setObjectName("skipButton")
