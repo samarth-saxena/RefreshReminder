@@ -6,13 +6,8 @@ Refresh Reminder helps users improve not only their physical health but in turn 
 ## Features
 
 ### Screen to face distance tracker
-
-The application sets a baseline for the ideal distance you should be from your monitors, and then tracks your face in real-time. If you sit too close to the screen, a warning pops up and you can adjust yourself accordingly, reducing the strain on your eyes.
-
 ### Blink detection
+### Exercise suggestions
+### Sedentary Time Usage
+### Motion gesture controls
 
-Every blink moistens the eyes, and dry eyes are painful and harmful. Healthy blinking is about 20-25 blinks per minute, but while working with screens, it goes down to 7-10 bpm. Our app warns you if this is happening with you, ensuring you and your eyes remain refreshed.
-
-###
-###
-###
