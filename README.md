@@ -5,9 +5,8 @@ Refresh Reminder helps users improve not only their physical health but in turn 
 
 ## Features
 
-### Screen to face distance tracker
-### Blink detection
-### Exercise suggestions
-### Sedentary Time Usage
-### Motion gesture controls
-
+1. Screen to face distance tracker
+2. Blink detection
+3. Exercise suggestions
+4. Sedentary Time Usage
+5. Motion gesture controls
