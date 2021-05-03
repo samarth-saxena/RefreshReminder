@@ -16,10 +16,10 @@ Refresh Reminder helps users improve not only their physical health but in turn 
 
 ## App Screenshots
 Homescreen:
-![Alt text](screenshots/ss.jpg?raw=true "Title")
+![Alt text](screenshots/ss.png?raw=true "Title")
 Settings page:
-![Alt text](screenshots/ss2.jpg?raw=true "Title")
+![Alt text](screenshots/ss2.png?raw=true "Title")
 System tray icon:
-![Alt text](screenshots/ss3.jpg?raw=true "Title")
+![Alt text](screenshots/ss3.png?raw=true "Title")
 Break reminder popup (translucent):
-![Alt text](screenshots/ss4.jpg?raw=true "Title")
+![Alt text](screenshots/ss4.png?raw=true "Title")
