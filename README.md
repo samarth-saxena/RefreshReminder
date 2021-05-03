@@ -7,7 +7,7 @@ Video: https://youtu.be/f98Y7ksq3Kg
 
 ## What is it?
 
-Refresh Reminder helps users improve not only their physical health but also their work productivity by tracking their on-screen time and giving them a soft nudge to take timely breaks and notifying them about possible lapses in eye blinking and improper face-to-screen distance. Further, it suggests and guides the users through optimal exercises via our AR model. The application can also be accessed by motion gestures thus keeping the user away from their digital devices. 
+Refresh Reminder helps users improve not only their physical health but also their work productivity by tracking their on-screen time and giving them a soft nudge to take timely breaks and guides the users through optimal exercises via our AR model. Further, it notifys them about possible lapses in eye blinking and improper face-to-screen distance. The application can also be accessed by motion gestures thus keeping the user away from their digital devices. 
 
 ## Features
 
