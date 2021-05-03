@@ -13,3 +13,7 @@ Refresh Reminder helps users improve not only their physical health but in turn 
 3. Exercise suggestions
 4. Sedentary Time Usage
 5. Motion gesture controls
+
+## App Screenshots
+![Alt text](screenshots/ss.jpg?raw=true "Title")
+![Alt text](screenshots/ss2.jpg?raw=true "Title")
