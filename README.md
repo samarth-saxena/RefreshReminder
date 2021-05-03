@@ -15,6 +15,11 @@ Refresh Reminder helps users improve not only their physical health but in turn 
 5. Motion gesture controls
 
 ## App Screenshots
+Homescreen:
 ![Alt text](screenshots/ss.jpg?raw=true "Title")
+Settings page:
 ![Alt text](screenshots/ss2.jpg?raw=true "Title")
+System tray icon:
 ![Alt text](screenshots/ss3.jpg?raw=true "Title")
+Break reminder popup (translucent):
+![Alt text](screenshots/ss4.jpg?raw=true "Title")
