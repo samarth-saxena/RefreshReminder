@@ -69,3 +69,5 @@ If compiling the source code (method #2 of installation):
 1. Clone the repository
 2. Navigate to /src
 3. Compile and run "gui.py"
+
+<i><b> Feedback, suggestions and contributions are welcome ! :) </b></i>
