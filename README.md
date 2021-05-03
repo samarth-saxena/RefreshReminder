@@ -59,7 +59,7 @@ If compiling the source code (method #2 of installation):
 ## Installation instructions
 
 ### 1. Running the executable
-1. Download the .rar from __________
+1. Download the .rar from https://drive.google.com/drive/folders/185sIaasrRyNZXbI5dC9ZrfqBN2XG7ua8?usp=sharing
 2. Extract it at the desired location
 3. Run "source/gui.exe"
 
