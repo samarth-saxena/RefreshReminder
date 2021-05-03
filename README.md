@@ -15,6 +15,6 @@ Refresh Reminder helps users improve not only their physical health but in turn 
 5. Motion gesture controls
 
 ## App Screenshots
-![Alt text](screenshots/ss.jpg?raw=true "Title")
-![Alt text](screenshots/ss2.jpg?raw=true "Title")
-![Alt text](screenshots/ss3.jpg?raw=true "Title")
+![Alt text](screenshots/ss.png?raw=true "Title")
+![Alt text](screenshots/ss2.png?raw=true "Title")
+![Alt text](screenshots/ss3.png?raw=true "Title")
