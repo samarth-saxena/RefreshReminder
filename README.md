@@ -17,3 +17,4 @@ Refresh Reminder helps users improve not only their physical health but in turn 
 ## App Screenshots
 ![Alt text](screenshots/ss.jpg?raw=true "Title")
 ![Alt text](screenshots/ss2.jpg?raw=true "Title")
+![Alt text](screenshots/ss3.jpg?raw=true "Title")
