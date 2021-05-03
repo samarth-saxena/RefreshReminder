@@ -31,3 +31,38 @@ System tray icon:
 Break reminder popup (translucent):
 
 ![Alt text](screenshots/ss4.png?raw=true "Title")
+
+Face-screen distance popup (non-intrusive border style):
+
+![Alt text](screenshots/ss5.png?raw=true "Title")
+
+Blink reminder popup (non-intrusive border style):
+
+![Alt text](screenshots/ss6.png?raw=true "Title")
+
+## System Requirements
+- OS: Windows 10 only
+- Webcam (either inbuilt or external)
+
+If compiling the source code (method #2 of installation):
+- Python 3.9 or higher
+	- PyQt5 toolkit
+	- win10toast library
+	- NumPy
+- OpenCV
+	- imageio
+	- Haar Cascade
+	- Dlib
+
+## Installation instructions
+
+### 1. Running the executable
+1. Download the .rar from __________
+2. Extract it at the desired location
+3. Run "source/gui.exe"
+
+--- or ---
+### 2. Cloning the repository
+1. Clone the repository
+2. Navigate to /src
+3. Compile and run "gui.py"
